@@ -1,0 +1,516 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "User Api",
+    "description": "User Api",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://localhost:8000"
+    }
+  ],
+  "paths": {
+    "/api/users": {
+        "post": {
+            "description": "Create a new user",
+            "requestBody": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "name": {
+                                    "type": "string"
+                                },
+                                "username": {
+                                    "type": "string"
+                                },
+                                "email": {
+                                    "type": "string"
+                                },
+                                "no_telp": {
+                                    "type": "string"
+                                },
+                                "password": {
+                                    "type": "string"
+                                },
+                                "password_confirmation": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": ["name", "username", "email", "password"]
+                        }
+                    }
+                }
+            },
+            "responses": {
+                "201": {
+                    "description": "User created successfully",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "message": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "400": {
+                    "description": "Validation error",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "message": {
+                                        "type": "string"
+                                    },
+                                    "errors": {
+                                        "type": "object",
+                                        "properties": {
+                                            "name": {
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "username": {
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "email": {
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "no_telp": {
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "password": {
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "password_confirmation": {
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "string"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+      "/api/users/login": {
+          "post": {
+              "description": "Login user",
+              "requestBody": {
+                  "content": {
+                      "application/json": {
+                          "schema": {
+                              "type": "object",
+                              "properties": {
+                                  "username": {
+                                      "type": "string"
+                                  },
+                                  "password": {
+                                      "type": "string"
+                                  }
+                              },
+                              "required": ["username", "password"]
+                          }
+                      }
+                  }
+              },
+              "responses": {
+                  "200": {
+                      "description": "User logged in successfully",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "type": "object",
+                                  "properties": {
+                                      "message": {
+                                          "type": "string"
+                                      },
+                                      "data": {
+                                          "type": "object",
+                                          "properties": {
+                                              "message": {
+                                                  "type": "string"
+                                              },
+                                              "token": {
+                                                  "type": "string"
+                                              }
+                                          }
+                                      }
+                                  }
+                              }
+                          }
+                      }
+                  },
+                  "401": {
+                      "description": "Unauthorized",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "type": "object",
+                                  "properties": {
+                                      "message": {
+                                          "type": "string"
+                                      }
+                                  }
+                              }
+                          }
+                      }
+                  }
+              }
+          }
+      },
+      "api/users/current": {
+        "get": {
+            "description": "Get current user data",
+            "responses": {
+                "200": {
+                    "description": "Get User data",
+                    "parameters": [
+                        {
+                            "name": "Authorization",
+                            "in": "header"
+                        }
+                    ],
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "messages": {
+                                        "type": "string"
+                                    },
+                                    "data": {
+                                        "type": "object",
+                                        "properties": {
+                                            "name": {
+                                                "type": "string"
+                                            },
+                                            "username": {
+                                                "type": "string"
+                                            },
+                                            "email": {
+                                                "type": "string"
+                                            },
+                                            "no_telp": {
+                                                "type": "string"
+                                            },
+                                            "team": {
+                                                "type": "string"
+                                            },
+                                            "address": {
+                                                "type": "string"
+                                            },
+                                            "date_of_birth": {
+                                                "type": "date"
+                                            },
+                                            "profile_photo": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "401": {
+                    "description": "Unauthorized",
+                    "parameters": [
+                        {
+                            "name": "Authorization",
+                            "in": "header"
+                        }
+                    ],
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "message": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+          "patch": {
+              "description": "Update user data",
+              "requestBody": {
+                  "content": {
+                      "application/json": {
+                          "schema": {
+                              "type": "object",
+                              "properties": {
+                                      "name": {
+                                          "type": "string"
+                                      },
+                                      "username": {
+                                          "type": "string"
+                                      },
+                                      "email": {
+                                          "type": "string"
+                                      },
+                                      "no_telp": {
+                                          "type": "string"
+                                      },
+                                      "team": {
+                                          "type": "string"
+                                      },
+                                      "address": {
+                                          "type": "string"
+                                      },
+                                      "date_of_birth": {
+                                          "type": "date"
+                                      },
+                                      "profile_photo": {
+                                          "type": "string"
+                                      }
+                              }
+                          }
+                      }
+                  }
+              },
+              "responses": {
+                  "200": {
+                      "description": "User updated successfully",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "type": "object",
+                                  "properties": {
+                                      "message": {
+                                          "type": "string"
+                                      }
+                                  }
+                              }
+                          }
+                      }
+                  },
+                  "400": {
+                      "description": "Validation error",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "type": "object",
+                                  "properties": {
+                                      "errors": {
+                                          "type": "object",
+                                          "properties": {
+                                              "name": {
+                                                  "type": "array",
+                                                  "items": {
+                                                      "type": "string"
+                                                  }
+                                              },
+                                              "username": {
+                                                  "type": "array",
+                                                  "items": {
+                                                      "type": "string"
+                                                  }
+                                              },
+                                              "email": {
+                                                  "type": "array",
+                                                  "items": {
+                                                      "type": "string"
+                                                  }
+                                              },
+                                              "no_telp": {
+                                                  "type": "array",
+                                                  "items": {
+                                                      "type": "string"
+                                                  }
+                                              }
+                                          }
+                                      }
+                                  }
+                              }
+                          }
+                      }
+                  }
+              }
+          }
+      },
+      "api/users/forgot-password": {
+          "post": {
+              "description": "Forgot password",
+              "requestBody": {
+                  "content": {
+                      "application/json": {
+                          "schema": {
+                              "type": "object",
+                              "properties": {
+                                  "email": {
+                                      "type": "string"
+                                  }
+                              },
+                              "required": ["email"]
+                          }
+                      }
+                  }
+              },
+              "responses": {
+                  "200": {
+                      "description": "Email sent successfully",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "type": "object",
+                                  "properties": {
+                                      "message": {
+                                          "type": "string"
+                                      }
+                                  }
+                              }
+                          }
+                      }
+                  },
+                  "400": {
+                      "description": "Validation error",
+                      "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "errors": {
+                                            "type": "object",
+                                            "properties": {
+                                                "email": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                      }
+                  }
+              }
+          }
+      },
+      "api/users/reset-password": {
+          "post": {
+              "description": "Reset password",
+              "requestBody": {
+                  "content": {
+                      "application/json": {
+                          "schema": {
+                              "type": "object",
+                              "properties": {
+                                  "email": {
+                                      "type": "string"
+                                  },
+                                  "token": {
+                                      "type": "string"
+                                  },
+                                  "password": {
+                                      "type": "string"
+                                  },
+                                  "password_confirmation": {
+                                      "type": "string"
+                                  }
+                              },
+                              "required": ["email", "token", "password", "password_confirmation"]
+                          }
+                      }
+                  }
+              },
+              "responses": {
+                  "200": {
+                      "description": "Password reset successfully",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "type": "object",
+                                  "properties": {
+                                      "message": {
+                                          "type": "string"
+                                      }
+                                  }
+                              }
+                          }
+                      }
+                  },
+                  "400": {
+                      "description": "Validation error",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "type": "object",
+                                  "properties": {
+                                      "message": {
+                                          "type": "string"
+                                      },
+                                      "errors": {
+                                          "type": "object",
+                                          "properties": {
+                                              "email": {
+                                                  "type": "array",
+                                                  "items": {
+                                                      "type": "string"
+                                                  }
+                                              },
+                                              "token": {
+                                                  "type": "array",
+                                                  "items": {
+                                                      "type": "string"
+                                                  }
+                                              },
+                                              "password": {
+                                                  "type": "array",
+                                                  "items": {
+                                                      "type": "string"
+                                                  }
+                                              },
+                                              "password_confirmation": {
+                                                  "type": "array",
+                                                  "items": {
+                                                      "type": "string"
+                                                  }
+                                              }
+                                          }
+                                      }
+                                  }
+                              }
+                          }
+                      }
+                  }
+              }
+          }
+      }
+  }
+}
