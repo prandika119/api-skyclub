@@ -13,7 +13,7 @@
     "paths": {
         "/fields": {
             "post": {
-                "description": "Create a new field",
+                "description": "Create a new field - This is Optional",
                 "requestBody": {
                     "content": {
                         "application/json": {
@@ -92,8 +92,18 @@
             }
         },
         "fields/{id}": {
+            "parameters": [
+                {
+                    "name": "id",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "number"
+                    }
+                }
+            ],
             "get": {
-                "description": "Get a field",
+                "description": "Get a field and schedule available",
                 "responses": {
                     "200": {
                         "description": "Field found",
@@ -143,7 +153,27 @@
                                                         },
                                                         "photo": {
                                                             "type": "string"
+                                                        },
+                                                        "isAvailable": {
+                                                            "type": "boolean"
                                                         }
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        "schedules": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "date": {
+                                                        "type": "string"
+                                                    },
+                                                    "session": {
+                                                        "type": "string"
+                                                    },
+                                                    "isBooked": {
+                                                        "type": "boolean"
                                                     }
                                                 }
                                             }
@@ -155,6 +185,21 @@
                     },
                     "404": {
                         "description": "Field not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -352,6 +397,7 @@
                 "description": "Delete Photo",
                 "responses": {
                     "200": {
+                        "description": "hapus foto",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -366,6 +412,20 @@
                         }
                     },
                     "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
                         "content": {
                             "application/json": {
                                 "schema": {
