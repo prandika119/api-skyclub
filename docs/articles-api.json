@@ -35,6 +35,12 @@
                                                     },
                                                     "content": {
                                                         "type": "string"
+                                                    },
+                                                    "photos": {
+                                                        "type": "string"
+                                                    },
+                                                    "created_at": {
+                                                        "type": "string"
                                                     }
                                                 }
                                             }
@@ -74,6 +80,9 @@
                                     },
                                     "content": {
                                         "type": "string"
+                                    },
+                                    "photos": {
+                                        "type": "string"
                                     }
                                 }
                             }
@@ -105,6 +114,9 @@
                                     "properties": {
                                         "message": {
                                             "type": "string"
+                                        },
+                                        "errors": {
+                                            "type": "object"
                                         }
                                     }
                                 }
@@ -145,6 +157,23 @@
                                                     "type": "string"
                                                 },
                                                 "content": {
+                                                    "type": "string"
+                                                },
+                                                "photos": {
+                                                    "type": "string"
+                                                },
+                                                "author": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer"
+                                                        },
+                                                        "name": {
+                                                            "type": "string"
+                                                        }
+                                                    }
+                                                },
+                                                "created_at": {
                                                     "type": "string"
                                                 }
                                             }
@@ -194,6 +223,9 @@
                                     },
                                     "content": {
                                         "type": "string"
+                                    },
+                                    "photos": {
+                                        "type": "string"
                                     }
                                 }
                             }
@@ -225,6 +257,9 @@
                                     "properties": {
                                         "message": {
                                             "type": "string"
+                                        },
+                                        "errors": {
+                                            "type": "object"
                                         }
                                     }
                                 }

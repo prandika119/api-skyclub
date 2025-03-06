@@ -1,0 +1,1 @@
+{"version":1,"defects":{"Tests\\Feature\\AuthTest::testRegisterSuccess":7,"Tests\\Feature\\AuthTest::testRegisterUsernameDuplicate":8},"times":{"Tests\\Feature\\AuthTest::testRegisterSuccess":0.224,"Tests\\Feature\\AuthTest::testRegisterFailed":0.009,"Tests\\Feature\\AuthTest::testRegisterUsernameDuplicate":0.018,"Tests\\Feature\\AuthTest::testRegisterEmailNull":0.014}}

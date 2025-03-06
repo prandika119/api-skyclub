@@ -39,9 +39,7 @@
                                                     "session": {
                                                         "type": "integer"
                                                     },
-                                                    "status": {
-                                                        "type": "string"
-                                                    },
+                                                    "description": "string",
                                                     "owner": {
                                                         "type": "object",
                                                         "properties": {
@@ -49,6 +47,9 @@
                                                                 "type": "integer"
                                                             },
                                                             "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "profile_picture": {
                                                                 "type": "string"
                                                             }
                                                         }
@@ -79,6 +80,20 @@
                                     },
                                     "session": {
                                         "type": "integer"
+                                    },
+                                    "description": {
+                                        "type": "string"
+                                    },
+                                    "owner": {
+                                        "type": "object",
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer"
+                                            },
+                                            "team": {
+                                                "type": "string"
+                                            }
+                                        }
                                     }
                                 }
                             }
@@ -110,6 +125,41 @@
                                     "properties": {
                                         "message": {
                                             "type": "string"
+                                        },
+                                        "errors": {
+                                            "type": "object",
+                                            "properties": {
+                                                "field_id": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "date": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "session": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "description": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "owner": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string"
+                                                    }
+                                                }
+                                            }
                                         }
                                     }
                                 }
@@ -239,6 +289,26 @@
         "/sparing/request/{id}": {
             "post": {
                 "summary": "Request sparing",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "sparing_id": {
+                                        "type": "integer"
+                                    },
+                                    "user_id": {
+                                        "type": "integer"
+                                    },
+                                    "team": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "200": {
                         "description": "Success request sparing",
