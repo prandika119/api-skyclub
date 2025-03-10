@@ -154,8 +154,13 @@
                                       "data": {
                                           "type": "object",
                                           "properties": {
-                                              "message": {
-                                                  "type": "string"
+                                              "user": {
+                                                  "type": "object",
+                                                  "properties": {
+                                                      "id": "number",
+                                                      "name":"string",
+                                                      "profile_photo": "string"
+                                                  }
                                               },
                                               "token": {
                                                   "type": "string"
@@ -176,6 +181,12 @@
                                   "properties": {
                                       "message": {
                                           "type": "string"
+                                      },
+                                      "errors": {
+                                          "type": "object",
+                                          "properties": {
+                                              "message": "string"
+                                          }
                                       }
                                   }
                               }

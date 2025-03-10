@@ -32,6 +32,9 @@
                                     "status": {
                                         "type": "string"
                                     },
+                                    "wallet": {
+                                        "type": "number"
+                                    },
                                     "cart": {
                                         "type": "array",
                                         "items": {
@@ -106,7 +109,7 @@
                 }
             },
             "put": {
-                "summary": "Update a booking",
+                "summary": "Update a booking after payment",
                 "requestBody": {
                     "content": {
                         "application/json": {
@@ -124,6 +127,9 @@
                                     },
                                     "status": {
                                         "type": "string"
+                                    },
+                                    "wallet": {
+                                        "type": "number"
                                     },
                                     "cart": {
                                         "type": "array",
