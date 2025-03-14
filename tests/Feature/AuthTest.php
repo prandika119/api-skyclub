@@ -6,7 +6,9 @@ use App\Models\User;
 use Database\Seeders\UserSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Password;
 use Tests\TestCase;
 
 class AuthTest extends TestCase
@@ -14,7 +16,7 @@ class AuthTest extends TestCase
     /**
      * A basic feature test example.
      */
-
+    use RefreshDatabase;
     public function testRegisterSuccess(): void
     {
         $response = $this->post('/api/users',
@@ -163,4 +165,70 @@ class AuthTest extends TestCase
         dump("isinya ini ".$response->getContent());
         $response->assertStatus(401);
     }
+
+    public function testForgotPassword(): void{
+        $this->seed([UserSeeder::class]);
+        $response = $this->post('/api/users/forgot-password', [
+            "email" => "test@gmail.com",
+            "no_telp" => "081234567891"
+        ]);
+        dump("isinya forgot ".$response->getContent());
+        $response->assertStatus(200);
+    }
+
+    public function testForgotPasswordUsernameWrong(): void{
+        $this->seed([UserSeeder::class]);
+        $response = $this->post('/api/users/forgot-password', [
+            "email" => "test123@gmail.com",
+            "no_telp" => "081234567891"
+        ]);
+        dump("isinya forgot ".$response->getContent());
+        $response->assertStatus(404);
+    }
+
+    public function testForgotPasswordUsernameEmpty(): void
+    {
+        $this->seed([UserSeeder::class]);
+        $response = $this->post('/api/users/forgot-password', [
+            "email" => "",
+            "no_telp" => "081234567891"
+        ]);
+        dump("isinya forgot ".$response->getContent());
+        $response->assertStatus(400);
+    }
+
+    public function testResetPasswordSuccess(): void
+    {
+        $this->seed([UserSeeder::class]);
+        $user = User::where('email', 'test@gmail.com')->first();
+        $token = Password::createToken($user);
+        $response = $this->post('/api/users/reset-password', [
+            "email" => "test@gmail.com",
+            "token" => $token,
+            "password" => "newpassword",
+            "password_confirmation" => "newpassword"
+        ]);
+        dump("isinya reset". $response->getContent());
+        $response->assertStatus(200);
+
+        $user->refresh();
+        $this->assertTrue(Hash::check('newpassword', $user->password));
+    }
+
+    public function testResetPasswordTokenNotValid(): void
+    {
+        $this->seed([UserSeeder::class]);
+        $user = User::where('email', 'test@gmail.com')->first();
+        $token = "token salah";
+        $response = $this->post('/api/users/reset-password', [
+            "email" => "test@gmail.com",
+            "token" => $token,
+            "password" => "newpassword",
+            "password_confirmation" => "newpassword"
+        ]);
+        dump("isinya reset". $response->getContent());
+        $response->assertStatus(400);
+    }
+
+
 }
