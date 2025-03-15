@@ -20,7 +20,7 @@ class ResetPasswordController extends Controller
             ->first();
 
         if (!$user) {
-            return response()->json(["message" => "Unauthorize", "errors" => ['message' => 'email belum terdaftar atau no telepon yang anda masukan salah']], 404);
+            return response()->json(["message" => "Bad Request", "errors" => ['message' => 'email belum terdaftar atau no telepon yang anda masukan salah']], 400);
         }
         $token = Password::createToken($user);
         return response()->json(['message' => 'Silakan atur password baru.', "data" => ["user" => ['email' => $user->email], 'token' => $token]], 200);

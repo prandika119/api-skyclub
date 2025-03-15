@@ -65,7 +65,7 @@
                             }
                         }
                     },
-                    "400": {
+                    "422": {
                         "description": "Validation error",
                         "content": {
                             "application/json": {
@@ -334,7 +334,7 @@
                             }
                         }
                     },
-                    "400": {
+                    "422": {
                         "description": "Validation error",
                         "content": {
                             "application/json": {
@@ -403,7 +403,7 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Email sent successfully",
+                        "description": "Checking Data Match ",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -423,7 +423,7 @@
                             }
                         }
                     },
-                    "400": {
+                    "422": {
                         "description": "Validation error",
                         "content": {
                             "application/json": {
@@ -455,7 +455,7 @@
                             }
                         }
                     },
-                    "404": {
+                    "400": {
                         "description": "Username or no_telp no valid",
                         "content": {
                             "application/json": {
@@ -527,7 +527,7 @@
                             }
                         }
                     },
-                    "400": {
+                    "422": {
                         "description": "Validation error",
                         "content": {
                             "application/json": {
@@ -571,7 +571,7 @@
                             }
                         }
                     },
-                    "401": {
+                    "400": {
                         "description": "Token not valid",
                         "content": {
                             "application/json": {

@@ -1,0 +1,44 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Http\Requests\UpdateUserRequest;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+
+class UserController extends Controller
+{
+    public function get (): JsonResponse{
+        $user = auth()->user();
+        return response()->json([
+            "message" => "Success Get This User",
+            "data" => [
+                "id" => $user->id,
+                "name" => $user->name,
+                "email" => $user->email,
+                "no_telp" => $user->no_telp,
+                "tema" => $user->team,
+                "address" => $user->address,
+                "date_of_birth" => $user->date_of_birth,
+                "profile_photo" => $user->profile_photo
+            ]
+        ]);
+    }
+
+    public function update(UpdateUserRequest $request): Response
+    {
+        $data = $request->validated();
+        $user = auth()->user();
+
+        if (isset($data['profile_photo'])){
+            $path = $data['profile_photo']->store('profile_photos', 'public');
+            $data['profile_photo'] = $path;
+            dump($data['profile_photo']);
+        }
+        $user->update($data);
+        return response([
+            "message" => "Success Update This User",
+        ], 200);
+    }
+}

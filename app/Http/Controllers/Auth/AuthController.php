@@ -8,6 +8,7 @@ use App\Http\Requests\RegisterRequest;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Request;
 
 class AuthController extends Controller
 {
@@ -43,6 +44,13 @@ class AuthController extends Controller
                 'token' => $token
             ]
         ]);
+    }
+
+    public function logout(Request $request): JsonResponse
+    {
+        $user = $request->user();
+        $user->currentAccessToken()->delete();
+        return response()->json(['message' => 'Logout Succesfully'], 200);
     }
 
     public function get (): JsonResponse{
