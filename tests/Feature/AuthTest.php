@@ -47,7 +47,7 @@ class AuthTest extends TestCase
                 'password' => 'password',
                 'password_confirmation' => 'password'
             ]);
-        $response->assertStatus(400);
+        $response->assertStatus(422);
         $response->assertJson([
             'message' => 'Validation error',
             "errors" => [
@@ -70,7 +70,7 @@ class AuthTest extends TestCase
                 'password' => 'password',
                 'password_confirmation' => 'password'
             ]);
-        $response->assertStatus(400);
+        $response->assertStatus(422);
         $response->assertJson([
             'message' => 'Validation error',
             "errors" => [
@@ -183,7 +183,7 @@ class AuthTest extends TestCase
             "no_telp" => "081234567891"
         ]);
         dump("isinya forgot ".$response->getContent());
-        $response->assertStatus(404);
+        $response->assertStatus(400);
     }
 
     public function testForgotPasswordUsernameEmpty(): void
@@ -194,7 +194,7 @@ class AuthTest extends TestCase
             "no_telp" => "081234567891"
         ]);
         dump("isinya forgot ".$response->getContent());
-        $response->assertStatus(400);
+        $response->assertStatus(422);
     }
 
     public function testResetPasswordSuccess(): void
@@ -228,6 +228,21 @@ class AuthTest extends TestCase
         ]);
         dump("isinya reset". $response->getContent());
         $response->assertStatus(400);
+    }
+
+    public function testResetPasswordPasswordNotMatch(): void
+    {
+        $this->seed([UserSeeder::class]);
+        $user = User::where('email', 'test@gmail.com')->first();
+        $token = "token salah";
+        $response = $this->post('/api/users/reset-password', [
+            "email" => "test@gmail.com",
+            "token" => $token,
+            "password" => "newpassword",
+            "password_confirmation" => "password not match"
+        ]);
+        dump("isinya reset". $response->getContent());
+        $response->assertStatus(422);
     }
 
 

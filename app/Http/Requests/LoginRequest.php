@@ -28,12 +28,4 @@ class LoginRequest extends FormRequest
             'password' => 'required|min:6'
         ];
     }
-
-    protected function failedValidation(Validator $validator)
-    {
-        throw new HttpResponseException(response([
-            "message" => "Validation error",
-            "errors" => $validator->getMessageBag()
-        ], 400));
-    }
 }

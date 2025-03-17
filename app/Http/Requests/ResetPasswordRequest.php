@@ -29,12 +29,4 @@ class ResetPasswordRequest extends FormRequest
             'password' => 'required|confirmed|min:8'
         ];
     }
-
-    protected function failedValidation(Validator $validator)
-    {
-        throw new HttpResponseException(response([
-            "message" => "Validation error",
-            "errors" => $validator->getMessageBag()
-        ], 400));
-    }
 }

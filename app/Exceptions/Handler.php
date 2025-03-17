@@ -2,7 +2,11 @@
 
 namespace App\Exceptions;
 
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response;
+use Illuminate\Validation\ValidationException;
 use Throwable;
 use Illuminate\Auth\AuthenticationException;
 
@@ -47,14 +51,41 @@ class Handler extends ExceptionHandler
         });
     }
 
-    protected function unauthenticated($request, AuthenticationException $exception)
+    public function render($request, Throwable $e): Response
     {
-        return response()->json([
-            'message' => "Unauthenticated",
-            'errors' => [
-                'message' => "Silahkan login terlebih dahulu"
-            ]
-        ], 401);
-    }
+        if ($e instanceof AuthenticationException) {
+            return response([
+                'message' => "Unauthenticated",
+                'errors' => [
+                    'message' => "Silahkan login terlebih dahulu"
+                ]
+            ], 401);
+        }
+        if ($e instanceof AuthorizationException) {
+            return response([
+                'message' => "Unauthorized",
+                'errors' => [
+                    'message' => "Anda tidak memiliki akses untuk melakukan aksi ini"
+                ]
+            ], 403);
+        }
 
+        if ($e instanceof ValidationException) {
+            return response([
+                'message' => "Validation error",
+                'errors' => $e->errors()
+            ], 422);
+        }
+
+        // Handle server errors
+        if ($e instanceof \Exception) {
+            return response([
+                'message' => "Server Error",
+                'errors' => [
+                    'message' => "Terjadi kesalahan pada server. Silahkan coba lagi nanti."
+                ]
+            ], 500);
+        }
+        return parent::render($request, $e);
+    }
 }
