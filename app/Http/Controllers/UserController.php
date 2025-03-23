@@ -6,6 +6,7 @@ use App\Http\Requests\UpdateUserRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
@@ -30,7 +31,9 @@ class UserController extends Controller
     {
         $data = $request->validated();
         $user = auth()->user();
-
+        if ($user->profile_photo){
+            Storage::disk('public')->delete('profile_photos/'.$user->profile_photo);
+        }
         if (isset($data['profile_photo'])){
             $path = $data['profile_photo']->store('profile_photos', 'public');
             $data['profile_photo'] = $path;

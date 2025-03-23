@@ -245,5 +245,25 @@ class AuthTest extends TestCase
         $response->assertStatus(422);
     }
 
+    public function testLogoutSuccess(): void
+    {
+        $this->seed([UserSeeder::class]);
+        $user = User::where('username', 'test')->first();
+        $token = $user->createToken('auth_token')->plainTextToken;
+        $response = $this->post('/api/users/logout', [], [
+            'Authorization' => 'Bearer '.$token
+        ]);
+        dump("isinya ini ".$response->getContent());
+        $response->assertStatus(200);
+    }
 
+    public function testLogoutFailed(): void
+    {
+        $this->seed([UserSeeder::class]);
+        $response = $this->post('/api/users/logout', [], [
+            'Authorization' => 'Null'
+        ]);
+        dump("isinya ini " . $response->getContent());
+        $response->assertStatus(401);
+    }
 }

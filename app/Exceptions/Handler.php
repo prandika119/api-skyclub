@@ -7,6 +7,7 @@ use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Throwable;
 use Illuminate\Auth\AuthenticationException;
 
@@ -68,13 +69,6 @@ class Handler extends ExceptionHandler
                     'message' => "Anda tidak memiliki akses untuk melakukan aksi ini"
                 ]
             ], 403);
-        }
-
-        if ($e instanceof ValidationException) {
-            return response([
-                'message' => "Validation error",
-                'errors' => $e->errors()
-            ], 422);
         }
 
         // Handle server errors
