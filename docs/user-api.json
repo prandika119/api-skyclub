@@ -7,7 +7,7 @@
     },
     "servers": [
         {
-            "url": "https://localhost:8000"
+            "url": "https://localhost:8000/api"
         }
     ],
     "paths": {
@@ -120,6 +120,29 @@
                                 }
                             }
                         }
+                    },
+                    "500": {
+                        "description": "Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "errors": {
+                                            "type": "object",
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -165,9 +188,18 @@
                                                 "user": {
                                                     "type": "object",
                                                     "properties": {
-                                                        "id": "number",
-                                                        "name": "string",
-                                                        "profile_photo": "string"
+                                                        "id": {
+                                                            "type": "number"
+                                                        },
+                                                        "name": {
+                                                            "type": "string"
+                                                        },
+                                                        "profile_photo": {
+                                                            "type": "string"
+                                                        },
+                                                        "wallet": {
+                                                            "type": "number"
+                                                        }
                                                     }
                                                 },
                                                 "token": {
@@ -193,7 +225,32 @@
                                         "errors": {
                                             "type": "object",
                                             "properties": {
-                                                "message": "string"
+                                                "message": {
+                                                    "type": "string"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "errors": {
+                                            "type": "object",
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string"
+                                                }
                                             }
                                         }
                                     }
@@ -204,24 +261,28 @@
                 }
             }
         },
-        "api/users/current": {
+        "/api/users/current": {
             "get": {
                 "description": "Get current user data",
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Get User data",
-                        "parameters": [
-                            {
-                                "name": "Authorization",
-                                "in": "header"
-                            }
-                        ],
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "type": "object",
                                     "properties": {
-                                        "messages": {
+                                        "message": {
                                             "type": "string"
                                         },
                                         "data": {
@@ -246,10 +307,14 @@
                                                     "type": "string"
                                                 },
                                                 "date_of_birth": {
-                                                    "type": "date"
+                                                    "type": "string",
+                                                    "format": "date"
                                                 },
                                                 "profile_photo": {
                                                     "type": "string"
+                                                },
+                                                "wallet": {
+                                                    "type": "number"
                                                 }
                                             }
                                         }
@@ -260,12 +325,6 @@
                     },
                     "401": {
                         "description": "Unauthorized",
-                        "parameters": [
-                            {
-                                "name": "Authorization",
-                                "in": "header"
-                            }
-                        ],
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -278,11 +337,44 @@
                                 }
                             }
                         }
+                    },
+                    "500": {
+                        "description": "Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "errors": {
+                                            "type": "object",
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             },
             "patch": {
                 "description": "Update user data",
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "requestBody": {
                     "content": {
                         "application/json": {
@@ -308,7 +400,8 @@
                                         "type": "string"
                                     },
                                     "date_of_birth": {
-                                        "type": "date"
+                                        "type": "string",
+                                        "format": "date"
                                     },
                                     "profile_photo": {
                                         "type": "string"
@@ -374,11 +467,49 @@
                                 }
                             }
                         }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "errors": {
+                                            "type": "object",
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
         },
-        "api/users/forgot-password": {
+        "/api/users/forgot-password": {
             "post": {
                 "description": "Forgot password",
                 "requestBody": {
@@ -403,7 +534,7 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Checking Data Match ",
+                        "description": "Checking Data Match",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -415,7 +546,9 @@
                                         "user": {
                                             "type": "object",
                                             "properties": {
-                                                "email": "string"
+                                                "email": {
+                                                    "type": "string"
+                                                }
                                             }
                                         }
                                     }
@@ -456,7 +589,7 @@
                         }
                     },
                     "400": {
-                        "description": "Username or no_telp no valid",
+                        "description": "Username or no_telp not valid",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -468,7 +601,32 @@
                                         "errors": {
                                             "type": "object",
                                             "properties": {
-                                                "message": "string"
+                                                "message": {
+                                                    "type": "string"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "errors": {
+                                            "type": "object",
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string"
+                                                }
                                             }
                                         }
                                     }
@@ -479,7 +637,7 @@
                 }
             }
         },
-        "api/users/reset-password": {
+        "/api/users/reset-password": {
             "post": {
                 "description": "Reset password",
                 "requestBody": {
@@ -584,7 +742,9 @@
                                         "errors": {
                                             "type": "object",
                                             "properties": {
-                                                "message": "string"
+                                                "message": {
+                                                    "type": "string"
+                                                }
                                             }
                                         }
                                     }
@@ -605,7 +765,102 @@
                                         "errors": {
                                             "type": "object",
                                             "properties": {
-                                                "message": "string"
+                                                "message": {
+                                                    "type": "string"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "errors": {
+                                            "type": "object",
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/users/logout": {
+            "post": {
+                "description": "Logout user",
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User logged out successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "errors": {
+                                            "type": "object",
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string"
+                                                }
                                             }
                                         }
                                     }

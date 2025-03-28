@@ -29,7 +29,7 @@ Route::middleware('auth:sanctum')->group(function (){
     // Route Admin User
     Route::middleware('can:isAdmin')->group(function (){
         Route::post('/fields', [FieldController::class, 'store']);
-        Route::put('/fields/{field:id}', [FieldController::class, 'update']);
+        Route::put('/fields/{field:id}/update', [FieldController::class, 'update']);
 
         // field photos
         Route::post('/fields/{field:id}/photos', [FieldImageController::class, 'store']);
@@ -38,7 +38,6 @@ Route::middleware('auth:sanctum')->group(function (){
         // field facilities
         Route::post('/fields/{field}/facilities/{facility}', [FacilityController::class, 'addFacilityToField']);
         Route::delete('/fields/{field}/facilities/{facility}', [FacilityController::class, 'removeFacilityFromField']);
-
     });
 
     // Route Authenticated User

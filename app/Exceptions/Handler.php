@@ -57,17 +57,13 @@ class Handler extends ExceptionHandler
         if ($e instanceof AuthenticationException) {
             return response([
                 'message' => "Unauthenticated",
-                'errors' => [
-                    'message' => "Silahkan login terlebih dahulu"
-                ]
+                'errors' => "Silahkan login terlebih dahulu"
             ], 401);
         }
         if ($e instanceof AuthorizationException) {
             return response([
                 'message' => "Unauthorized",
-                'errors' => [
-                    'message' => "Anda tidak memiliki akses untuk melakukan aksi ini"
-                ]
+                'errors' => "Anda tidak memiliki izin untuk mengakses resource ini"
             ], 403);
         }
 
@@ -75,9 +71,7 @@ class Handler extends ExceptionHandler
         if ($e instanceof \Exception) {
             return response([
                 'message' => "Server Error",
-                'errors' => [
-                    'message' => "Terjadi kesalahan pada server. Silahkan coba lagi nanti."
-                ]
+                'errors' => "Terjadi kesalahan pada server. Silahkan coba lagi nanti."
             ], 500);
         }
         return parent::render($request, $e);

@@ -10,87 +10,71 @@
             "url": "https://localhost:8000/api"
         }
     ],
-    "paths": {
-        "/fields": {
-            "post": {
-                "description": "Create a new field - This is Optional",
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "name": {
-                                        "type": "string"
-                                    },
-                                    "description": {
-                                        "type": "string"
-                                    },
-                                    "price": {
-                                        "type": "number"
-                                    }
+    "components": {
+        "responses": {
+            "Unauthorized": {
+                "description": "Unauthorized access.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "example": "Unauthorized"
+                                },
+                                "errors": {
+                                    "type": "string",
+                                    "example": "Silahkan login terlebih dahulu"
                                 }
                             }
                         }
                     }
-                },
-                "responses": {
-                    "201": {
-                        "description": "Field created",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "message": {
-                                            "type": "string"
-                                        }
-                                    }
+                }
+            },
+            "Forbidden": {
+                "description": "Access forbidden.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "example": "Forbidden"
+                                },
+                                "errors": {
+                                    "type": "string",
+                                    "example": "Anda tidak memiliki hak akses"
                                 }
                             }
                         }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "message": {
-                                            "type": "string"
-                                        },
-                                        "errors": {
-                                            "type": "object",
-                                            "properties": {
-                                                "name": {
-                                                    "type": "array",
-                                                    "items": {
-                                                        "type": "string"
-                                                    }
-                                                },
-                                                "description": {
-                                                    "type": "array",
-                                                    "items": {
-                                                        "type": "string"
-                                                    }
-                                                },
-                                                "price": {
-                                                    "type": "array",
-                                                    "items": {
-                                                        "type": "string"
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
+                    }
+                }
+            },
+            "ServerError": {
+                "description": "Internal server error.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "example": "Internal server error"
+                                },
+                                "errors": {
+                                    "type": "string",
+                                    "example": "Terjadi kesalahan pada server"
                                 }
                             }
                         }
                     }
                 }
             }
-        },
+        }
+    },
+    "paths": {
         "fields/{id}": {
             "parameters": [
                 {
@@ -121,7 +105,10 @@
                                         "description": {
                                             "type": "string"
                                         },
-                                        "price": {
+                                        "weekday_price": {
+                                            "type": "number"
+                                        },
+                                        "weekend_price": {
                                             "type": "number"
                                         },
                                         "photos": {
@@ -153,65 +140,19 @@
                                                         },
                                                         "photo": {
                                                             "type": "string"
-                                                        },
-                                                        "isAvailable": {
-                                                            "type": "boolean"
                                                         }
                                                     }
                                                 }
                                             }
-                                        },
-                                        "schedules": {
-                                            "type": "array",
-                                            "items": {
-                                                "type": "object",
-                                                "properties": {
-                                                    "date": {
-                                                        "type": "string"
-                                                    },
-                                                    "session": {
-                                                        "type": "string"
-                                                    },
-                                                    "isBooked": {
-                                                        "type": "boolean"
-                                                    }
-                                                }
-                                            }
                                         }
                                     }
                                 }
                             }
                         }
                     },
-                    "404": {
-                        "description": "Field not found",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "message": {
-                                            "type": "string"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
+
                     "500": {
-                        "description": "Internal server error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "message": {
-                                            "type": "string"
-                                        }
-                                    }
-                                }
-                            }
-                        }
+                        "$ref": "#/components/responses/ServerError"
                     }
                 }
             },
@@ -229,7 +170,10 @@
                                     "description": {
                                         "type": "string"
                                     },
-                                    "price": {
+                                    "weekday_price": {
+                                        "type": "number"
+                                    },
+                                    "weekend_price": {
                                         "type": "number"
                                     }
                                 }
@@ -291,8 +235,23 @@
                             }
                         }
                     },
-                    "404": {
-                        "description": "Field not found",
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/Forbidden"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
+                    }
+                }
+            }
+        },
+        "fields/{field_id}/schedules": {
+            "get": {
+                "description": "Get all schedules for a field",
+                "responses": {
+                    "200": {
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -300,14 +259,47 @@
                                     "properties": {
                                         "message": {
                                             "type": "string"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "number"
+                                                        },
+                                                        "date": {
+                                                            "type": "string"
+                                                        },
+                                                        "price": {
+                                                            "type": "number"
+                                                        },
+                                                        "time_slots": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "time": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "is_available": {
+                                                                        "type": "boolean"
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
                                         }
                                     }
                                 }
                             }
                         }
                     },
-                    "401": {
-                        "description": "Unauthorized",
+                    "404": {
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -324,8 +316,207 @@
                 }
             }
         },
-        "/fields/photos": {
+        "/fields": {
+            "post": {
+                "description": "Create a new field - This is Optional",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "description": {
+                                        "type": "string"
+                                    },
+                                    "weekday_price": {
+                                        "type": "number"
+                                    },
+                                    "weekend_price": {
+                                        "type": "number"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Field created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "errors": {
+                                            "type": "object",
+                                            "properties": {
+                                                "name": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "description": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "weekday_price": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "weekend_price": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/fields/{id}/update": {
+            "post": {
+                "description": "Update field ",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "description": {
+                                        "type": "string"
+                                    },
+                                    "weekday_price": {
+                                        "type": "number"
+                                    },
+                                    "weekend_price": {
+                                        "type": "number"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Field created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "errors": {
+                                            "type": "object",
+                                            "properties": {
+                                                "name": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "description": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "weekday_price": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "weekend_price": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+
+        "/fields/{id}/photos": {
             "description": "Upload a photo for a field",
+            "parameters": [
+                {
+                    "name": "id",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "number"
+                    }
+                }
+            ],
             "post": {
                 "description": "Uploud new Photo",
                 "requestBody": {
@@ -340,9 +531,6 @@
                                     },
                                     "title": {
                                         "type": "string"
-                                    },
-                                    "id_field": {
-                                        "type": "number"
                                     }
                                 }
                             }
@@ -395,6 +583,16 @@
         "/fields/photos/{id}": {
             "delete": {
                 "description": "Delete Photo",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "hapus foto",
@@ -442,9 +640,27 @@
                 }
             }
         },
-        "/fields/facilities/{id_field}/{id_facility}": {
+        "/fields/{id_field}/facilities/{id_facility}": {
             "post": {
                 "description": "Add a facility to a field",
+                "parameters": [
+                    {
+                        "name": "id_field",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "id_facility",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
                 "responses": {
                     "201": {
                         "content": {
@@ -487,61 +703,6 @@
                                     "properties": {
                                         "message": {
                                             "type": "string"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "message": {
-                                            "type": "string"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "fields/schedules/{id_field}": {
-            "get": {
-                "description": "Get all schedules for a field",
-                "responses": {
-                    "200": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "message": {
-                                            "type": "string"
-                                        },
-                                        "data": {
-                                            "type": "array",
-                                            "items": {
-                                                "type": "object",
-                                                "properties": {
-                                                    "id": {
-                                                        "type": "number"
-                                                    },
-                                                    "date": {
-                                                        "type": "string"
-                                                    },
-                                                    "session": {
-                                                        "type": "string"
-                                                    },
-                                                    "isBooked": {
-                                                        "type": "boolean"
-                                                    }
-                                                }
-                                            }
                                         }
                                     }
                                 }
