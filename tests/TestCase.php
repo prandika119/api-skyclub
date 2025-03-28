@@ -13,6 +13,7 @@ use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 
 abstract class TestCase extends BaseTestCase
@@ -32,6 +33,7 @@ abstract class TestCase extends BaseTestCase
         $directoryFieldImage = storage_path('app/public/fields');
         File::cleanDirectory($directoryProfilePhoto);
         File::cleanDirectory($directoryFieldImage);
+        Session::forget('cart');
     }
 
     protected function AuthUser(): User
@@ -61,6 +63,12 @@ abstract class TestCase extends BaseTestCase
         Storage::disk('public')->put($fieldImage->photo, 'dummy content');
     }
 
+    protected function CreateDataField(): Field
+    {
+        $this->seed([FieldSeeder::class]);
+        return Field::where('name', 'fieldTest')->first();
+    }
+
     protected function CreateCompleteDataField(): Field
     {
         $this->seed([FieldSeeder::class, FacilitySeeder::class]);
@@ -84,21 +92,4 @@ abstract class TestCase extends BaseTestCase
         return $field;
     }
 
-//    protected function CreateCompleteDataField(): Field
-//    {
-//        $this->seed([FieldSeeder::class, FacilitySeeder::class]);
-//        $field = Field::where('name', 'fieldTest')->first();
-//        $field->facilities()->attach([1, 2]);
-//        $field->photos()->create([
-//            'photo' => 'fields/imageTest.jpg',
-//            'title' => 'imageTest'
-//        ]);
-//        $field->photos()->create([
-//            'photo' => 'fields/imageTest2.jpg',
-//            'title' => 'imageTest2'
-//        ]);
-//        Storage::disk('public')->put('fields/imageTest.jpg', 'dummy content');
-//        Storage::disk('public')->put('fields/imageTest2.jpg', 'dummy content');
-//        return $field;
-//    }
 }

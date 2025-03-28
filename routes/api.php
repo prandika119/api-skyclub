@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\FacilityController;
 use App\Http\Controllers\FieldController;
 use App\Http\Controllers\FieldImageController;
@@ -45,8 +46,10 @@ Route::middleware('auth:sanctum')->group(function (){
     Route::patch('/users/current', [UserController::class, 'update']);
     Route::post('/users/logout', [AuthController::class, 'logout'])->name('logout');
 
-    // Route Booking Cart
-
+    // Route Cart
+    Route::get('/cart', [CartController::class, 'index']);
+    Route::post('/cart', [CartController::class, 'store']);
+    Route::delete('/cart/{id}', [CartController::class, 'destroy']);
 });
 
 // Route only guest
