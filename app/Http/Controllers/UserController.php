@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\UpdateUserRequest;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -11,6 +12,7 @@ use Illuminate\Support\Facades\Storage;
 class UserController extends Controller
 {
     public function get (): JsonResponse{
+        /* @var User $user */
         $user = auth()->user();
         return response()->json([
             "message" => "Success Get This User",
@@ -22,7 +24,8 @@ class UserController extends Controller
                 "tema" => $user->team,
                 "address" => $user->address,
                 "date_of_birth" => $user->date_of_birth,
-                "profile_photo" => $user->profile_photo
+                "profile_photo" => $user->profile_photo,
+                "wallet" => $user->wallet->balance
             ]
         ]);
     }

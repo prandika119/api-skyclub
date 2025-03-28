@@ -30,6 +30,7 @@ class AuthController extends Controller
                 "errors" => ["message" => "Username or Password Wrong"]
             ], 401);
         }
+        /* @var User $user */
         $user = auth()->user();
         $token = $user->createToken('authToken')->plainTextToken;
         return response()->json([
@@ -38,7 +39,8 @@ class AuthController extends Controller
                 'user' => [
                     'id' => $user->id,
                     'name' => $user->name,
-                    'profile_photo' => $user->profile_photo
+                    'profile_photo' => $user->profile_photo,
+                    'wallet' => $user->wallet->balance
                 ],
                 'token' => $token
             ]
@@ -52,20 +54,4 @@ class AuthController extends Controller
         return response()->json(['message' => 'Logout Succesfully'], 200);
     }
 
-    public function get (): JsonResponse{
-        $user = auth()->user();
-        return response()->json([
-            "message" => "Success Get This User",
-            "data" => [
-                "id" => $user->id,
-                "name" => $user->name,
-                "email" => $user->email,
-                "no_telp" => $user->no_telp,
-                "tema" => $user->team,
-                "address" => $user->address,
-                "date_of_birth" => $user->date_of_birth,
-                "profile_photo" => $user->profile_photo
-            ]
-        ]);
-    }
 }

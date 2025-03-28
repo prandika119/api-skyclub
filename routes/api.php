@@ -44,6 +44,9 @@ Route::middleware('auth:sanctum')->group(function (){
     Route::get('/users/current', [UserController::class, 'get']);
     Route::patch('/users/current', [UserController::class, 'update']);
     Route::post('/users/logout', [AuthController::class, 'logout'])->name('logout');
+
+    // Route Booking Cart
+
 });
 
 // Route only guest

@@ -54,7 +54,6 @@ class AuthTest extends TestCase
 
             ]
         ]);
-
         dump("isinya ini".$response->getContent());
     }
 
@@ -95,7 +94,8 @@ class AuthTest extends TestCase
             "data" => [
                 "user" => [
                     "name" => "test",
-                    "profile_photo" => null
+                    "profile_photo" => null,
+                    "wallet" => 0
                 ]
             ]
         ]);
@@ -151,7 +151,8 @@ class AuthTest extends TestCase
                 "tema" => $user->team,
                 "address" => $user->address,
                 "date_of_birth" => $user->date_of_birth,
-                "profile_photo" => $user->profile_photo
+                "profile_photo" => $user->profile_photo,
+                'wallet' => $user->wallet->balance
             ]
         ]);
     }

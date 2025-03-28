@@ -67,6 +67,13 @@ class Handler extends ExceptionHandler
             ], 403);
         }
 
+        if ($e instanceof ValidationException) {
+            return response([
+                'message' => "Validation error",
+                'errors' => $e->errors()
+            ], 422);
+        }
+
         // Handle server errors
         if ($e instanceof \Exception) {
             return response([
