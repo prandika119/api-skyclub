@@ -24,7 +24,6 @@ class AuthController extends Controller
     public function login(LoginRequest $request): JsonResponse
     {
         $data = $request->validated();
-        dump($data);
         if (!auth()->attempt($data)) {
             return response()->json([
                 'message' => "Unauthorize",
