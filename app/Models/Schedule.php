@@ -39,6 +39,8 @@ class Schedule
     {
         // looping for create schedule 2 months a go
         self::initialize();
+        $schedules_booked = ListBooking::where('date', '>=', self::$startOfWeek)->where('field_id', $field->id)->get();
+
         for ($i = 0; $i < self::$daysCount+1; $i++) {
             $date = self::$startOfWeek->copy()->addDays($i);
             self::$schedules[$i] = new Schedule($date->format('d-m-Y'), $field);
@@ -50,10 +52,21 @@ class Schedule
 
             // format time slots
             for ($j = 0; $j < 24; $j++) {
-                self::$schedules[$i]->time_slots[$j] = [
-                    'time' => $j . ':00 - ' . ($j + 1) . ':00',
-                    'is_available' => true
-                ];
+                // check if schedules booked
+                $booked = $schedules_booked->where('date', $date->format('Y-m-d'))
+                    ->where('session', $j . ':00 - ' . ($j + 1) . ':00')->first();
+                if ($booked) {
+                    self::$schedules[$i]->time_slots[$j] = [
+                        'time' => $j . ':00 - ' . ($j + 1) . ':00',
+                        'is_available' => false
+                    ];
+                } else{
+                    self::$schedules[$i]->time_slots[$j] = [
+                        'time' => $j . ':00 - ' . ($j + 1) . ':00',
+                        'is_available' => true
+                    ];
+                }
+
             }
         }
         return collect(self::$schedules)->chunk(7);

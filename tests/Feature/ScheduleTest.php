@@ -25,6 +25,22 @@ class ScheduleTest extends TestCase
             'message' => 'Success',
             'data' => []
         ]);
+    }
 
+    public function testGetSchedulesWithBooking(): void
+    {
+        $user = $this->AuthUser();
+        $booking = $this->paymentBooking($user, '2025-04-8');
+        $field = Field::where('name', 'fieldTest')->first();
+        $response = $this->get('/api/fields/'.$field->id.'/schedules');
+        dump(json_encode(json_decode($response->getContent()), JSON_PRETTY_PRINT));
+        $response->assertStatus(200);
+        $response->assertJson([
+            'message' => 'Success',
+            'data' => []
+        ]);
+        $response->assertJsonFragment([
+            'is_available' => false,
+        ]);
     }
 }

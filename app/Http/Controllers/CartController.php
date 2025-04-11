@@ -28,6 +28,22 @@ class CartController extends Controller
     {
         $data = $request->validated();
         $cart = Session::get('cart', []);
+        $schedules_cart = $cart['schedules'] ?? [];
+
+        // Cek duplikat berdasarkan kombinasi field_id, schedule_date, dan schedule_time
+        $duplicate = collect($schedules_cart)->contains(function ($item) use ($data) {
+            return $item['field_id'] == $data['field_id'] &&
+                $item['schedule_date'] == $data['schedule_date'] &&
+                $item['schedule_time'] == $data['schedule_time'];
+        });
+
+        if ($duplicate) {
+            return response([
+                'message' => 'Bad Request',
+                'errors' => 'Jadwal tersebut sudah ada dalam keranjang'
+            ], 400);
+        }
+
         $cart['schedules'][] = $data;
         $cart['total_price'] = array_sum(array_column($cart['schedules'], 'price'));
         Session::put('cart', $cart);

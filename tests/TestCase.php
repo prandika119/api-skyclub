@@ -2,10 +2,14 @@
 
 namespace Tests;
 
+use App\Models\Booking;
 use App\Models\Facility;
 use App\Models\Field;
 use App\Models\FieldImage;
+use App\Models\ListBooking;
+use App\Models\Schedule;
 use App\Models\User;
+use Carbon\Carbon;
 use Database\Seeders\FacilitySeeder;
 use Database\Seeders\FieldSeeder;
 use Database\Seeders\UserSeeder;
@@ -23,6 +27,8 @@ abstract class TestCase extends BaseTestCase
     protected function setUp(): void
     {
         parent::setUp();
+        DB::delete('delete from list_bookings');
+        DB::delete('delete from bookings');
         DB::delete('delete from users');
         DB::delete('delete from field_images');
         DB::delete('delete from fields_facilities');
@@ -91,5 +97,56 @@ abstract class TestCase extends BaseTestCase
         Storage::disk('public')->put('fields/imageTest2.jpg', 'dummy content');
         return $field;
     }
+
+    protected function addDataToCart()
+    {
+        Session::get('cart', []);
+        $field = $this->CreateDataField();
+
+        $schedule = new Schedule('2025-04-25', $field);
+        $schedule2 = new Schedule('2025-04-25', $field);
+        $this->post('/api/cart', [
+        'field_id' => $schedule->field,
+        'schedule_date' => $schedule->date,
+        'schedule_time' => '8:00 - 9:00',
+        'price' => $schedule->price,
+        ]);
+        $this->post('/api/cart', [
+        'field_id' => $schedule2->field,
+        'schedule_date' => $schedule2->date,
+        'schedule_time' => '9:00 - 10:00',
+        'price' => $schedule2->price,
+        ]);
+        return $schedule->field;
+    }
+
+    protected function newBooking(User $user): Booking
+    {
+        $booking = Booking::create([
+            'order_date' => now(),
+            'rented_by' => $user->id,
+            'expired_at' => now()->addMinutes(5)
+        ]);
+        return $booking;
+    }
+
+    protected function paymentBooking($user, $date): Booking
+    {
+        $field = $this->CreateDataField();
+        $booking = Booking::create([
+            'order_date' => now()->subDay(1),
+            'rented_by' => $user->id,
+            'expired_at' => now()->addMinutes(5)
+        ]);
+        ListBooking::create([
+            'date' => Carbon::parse($date),
+            'session' => '8:00 - 9:00',
+            'price' => '50000',
+            'field_id' => $field->id,
+            'booking_id' => $booking->id
+        ]);
+        return $booking;
+    }
+
 
 }

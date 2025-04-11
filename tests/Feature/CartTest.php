@@ -11,19 +11,6 @@ use Tests\TestCase;
 
 class CartTest extends TestCase
 {
-
-    private function addDataToCart()
-    {
-        Session::get('cart', []);
-        $field = $this->CreateDataField();
-        $schedule = new Schedule('28-03-2025', $field);
-        $this->post('/api/cart', [
-            'field_id' => $schedule->field,
-            'schedule_date' => $schedule->date,
-            'schedule_time' => '8:00 - 9:00',
-            'price' => $schedule->price,
-        ]);
-    }
     public function testAddCart(): void
     {
         $field = $this->CreateDataField();
@@ -99,7 +86,7 @@ class CartTest extends TestCase
     public function testGetCart()
     {
         $this->AuthUser();
-        $this->addDataToCart();
+        $field = $this->addDataToCart();
         $response = $this->get('/api/cart');
         dump($response->getContent());
         $response->assertStatus(200);
@@ -108,12 +95,19 @@ class CartTest extends TestCase
             'data' => [
                 'schedules' => [
                     [
-                        'schedule_date' => '28-03-2025',
+                        'field_id' => $field,
+                        'schedule_date' => '25-04-2025',
                         'schedule_time' => '8:00 - 9:00',
+                        'price' => 50000,
+                    ],
+                    [
+                        'field_id' => $field,
+                        'schedule_date' => '25-04-2025',
+                        'schedule_time' => '9:00 - 10:00',
                         'price' => 50000,
                     ]
                 ],
-                'total_price' => 50000
+                'total_price' => 100000
             ]
         ]);
     }
@@ -123,6 +117,7 @@ class CartTest extends TestCase
         $this->AuthUser();
         $this->addDataToCart();
         dump(Session::get('cart'));
+        $this->delete('/api/cart/1');
         $response = $this->delete('/api/cart/0');
         dump($response->getContent());
         $response->assertStatus(200);
@@ -140,7 +135,7 @@ class CartTest extends TestCase
         $this->AuthUser();
         $this->addDataToCart();
         dump(Session::get('cart'));
-        $response = $this->delete('/api/cart/1');
+        $response = $this->delete('/api/cart/3');
         dump($response->getContent());
         $response->assertStatus(404);
         $response->assertJson([

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\BookingController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\FacilityController;
 use App\Http\Controllers\FieldController;
@@ -50,6 +51,11 @@ Route::middleware('auth:sanctum')->group(function (){
     Route::get('/cart', [CartController::class, 'index']);
     Route::post('/cart', [CartController::class, 'store']);
     Route::delete('/cart/{id}', [CartController::class, 'destroy']);
+
+    // Route Booking
+    Route::post('/booking', [BookingController::class, 'store']);
+    Route::post('/booking/payment', [BookingController::class, 'payment']);
+
 });
 
 // Route only guest

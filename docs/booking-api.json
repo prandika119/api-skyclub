@@ -14,49 +14,6 @@
         "/booking": {
             "post": {
                 "summary": "Create a booking",
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "customer_id": {
-                                        "type": "string"
-                                    },
-                                    "booking_date": {
-                                        "type": "string"
-                                    },
-                                    "field_id": {
-                                        "type": "string"
-                                    },
-                                    "status": {
-                                        "type": "string"
-                                    },
-                                    "wallet": {
-                                        "type": "number"
-                                    },
-                                    "cart": {
-                                        "type": "array",
-                                        "items": {
-                                            "type": "object",
-                                            "properties": {
-                                                "date": {
-                                                    "type": "date"
-                                                },
-                                                "session": {
-                                                    "type": "integer"
-                                                },
-                                                "price": {
-                                                    "type": "number"
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
                 "responses": {
                     "200": {
                         "description": "Booking created",
@@ -67,6 +24,34 @@
                                     "properties": {
                                         "message": {
                                             "type": "string"
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "booking": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "id": "string",
+                                                        "rented_by": "string",
+                                                        "expired_at": "string"
+                                                    }
+                                                },
+                                                "cart": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "schedules": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "field_id": "number",
+                                                                "schedule_date": "string",
+                                                                "schedule_time": "string",
+                                                                "price": "number"
+                                                            }
+                                                        },
+                                                        "total_price": "number"
+                                                    }
+                                                }
+                                            }
                                         }
                                     }
                                 }
