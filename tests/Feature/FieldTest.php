@@ -82,6 +82,7 @@ class FieldTest extends TestCase
             'weekday_price' => 100000,
             'weekend_price' => 100000,
         ]);
+        dump($response);
         dump($response->getContent());
         $response->assertStatus(403);
         $response->assertJson([

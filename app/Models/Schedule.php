@@ -30,45 +30,89 @@ class Schedule
     {
         self::$now = Carbon::now('Asia/Jakarta');
         self::$startOfWeek = self::$now->copy()->startOfWeek();
-        self::$endDate = self::$now->copy()->addMonths(1);
-        self::$endOfWeek = self::$endDate->copy()->endOfWeek();
-        self::$daysCount = self::$startOfWeek->diffInDays(self::$endOfWeek);
+        self::$endOfWeek = self::$now->copy()->endOfWeek();
+        //self::$daysCount = self::$startOfWeek->diffInDays(self::$endOfWeek);
     }
     //Generate Schedule 2 Months a go
-    public static function generateSchedule(Field $field): Collection
+    public static function generateSchedule(Field $field, ?string $startDate = null, ?string $endDate = null): Collection
     {
-        // looping for create schedule 2 months a go
-        self::initialize();
-        $schedules_booked = ListBooking::where('date', '>=', self::$startOfWeek)->where('field_id', $field->id)->get();
+        dump('Start Date: ' . $startDate);
+        // Inisialisasi default hanya jika start/end kosong
+        if (!$startDate || !$endDate) {
+            self::initialize();
+            $start = $startDate ?: self::$now->copy()->startOfWeek();
+            $end = $endDate ?: self::$now->copy()->endOfWeek();
+        } else {
+            $start = Carbon::parse($startDate);
+            $end = Carbon::parse($endDate);
+        }
 
-        for ($i = 0; $i < self::$daysCount+1; $i++) {
-            $date = self::$startOfWeek->copy()->addDays($i);
+        self::$schedules = []; // Reset
+        $daysCount = $start->diffInDays($end);
+
+        $schedules_booked = ListBooking::whereBetween('date', [
+            $start->toDateString(), $end->toDateString()
+        ])
+            ->where('field_id', $field->id)
+            ->get();
+
+        for ($i = 0; $i <= $daysCount; $i++) {
+            $date = $start->copy()->addDays($i);
             self::$schedules[$i] = new Schedule($date->format('d-m-Y'), $field);
 
-            // check if date is weekend and then change price
+            // Cek harga weekend
             if ($date->isWeekend()) {
                 self::$schedules[$i]->price = $field->weekend_price;
             }
 
-            // format time slots
+            // Isi slot waktu
             for ($j = 0; $j < 24; $j++) {
-                // check if schedules booked
+                $timeLabel = $j . ':00 - ' . ($j + 1) . ':00';
                 $booked = $schedules_booked->where('date', $date->format('Y-m-d'))
-                    ->where('session', $j . ':00 - ' . ($j + 1) . ':00')->first();
-                if ($booked) {
-                    self::$schedules[$i]->time_slots[$j] = [
-                        'time' => $j . ':00 - ' . ($j + 1) . ':00',
-                        'is_available' => false
-                    ];
-                } else{
-                    self::$schedules[$i]->time_slots[$j] = [
-                        'time' => $j . ':00 - ' . ($j + 1) . ':00',
-                        'is_available' => true
-                    ];
-                }
+                    ->where('session', $timeLabel)
+                    ->first();
 
+                self::$schedules[$i]->time_slots[$j] = [
+                    'time' => $timeLabel,
+                    'is_available' => !$booked
+                ];
             }
         }
-        return collect(self::$schedules)->chunk(7);
+        return collect(self::$schedules);
+
+
+        // looping for create schedule 2 months a go
+//        self::initialize();
+//        $schedules_booked = ListBooking::where('date', '>=', self::$startOfWeek)->where('field_id', $field->id)->get();
+//
+//        for ($i = 0; $i < self::$daysCount+1; $i++) {
+//            $date = self::$startOfWeek->copy()->addDays($i);
+//            self::$schedules[$i] = new Schedule($date->format('d-m-Y'), $field);
+//
+//            // check if date is weekend and then change price
+//            if ($date->isWeekend()) {
+//                self::$schedules[$i]->price = $field->weekend_price;
+//            }
+//
+//            // format time slots
+//            for ($j = 0; $j < 24; $j++) {
+//                // check if schedules booked
+//                $booked = $schedules_booked->where('date', $date->format('Y-m-d'))
+//                    ->where('session', $j . ':00 - ' . ($j + 1) . ':00')->first();
+//                if ($booked) {
+//                    self::$schedules[$i]->time_slots[$j] = [
+//                        'time' => $j . ':00 - ' . ($j + 1) . ':00',
+//                        'is_available' => false
+//                    ];
+//                } else{
+//                    self::$schedules[$i]->time_slots[$j] = [
+//                        'time' => $j . ':00 - ' . ($j + 1) . ':00',
+//                        'is_available' => true
+//                    ];
+//                }
+//
+//            }
+//        }
+
     }
 }

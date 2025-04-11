@@ -7,6 +7,7 @@ use App\Models\Field;
 use App\Http\Requests\StoreFieldRequest;
 use App\Http\Requests\UpdateFieldRequest;
 use App\Models\Schedule;
+use Carbon\Carbon;
 use Illuminate\Http\Client\Request;
 use Illuminate\Http\Response;
 
@@ -50,7 +51,10 @@ class FieldController extends Controller
 
     public function getSchedules(Field $field): Response
     {
-        $schedules = Schedule::generateSchedule($field);
+        $startDate = request()->query('start_date');
+        $endDate = request()->query('end_date');
+
+        $schedules = Schedule::generateSchedule($field, $startDate, $endDate);
         return response([
             'message' => 'Success',
             'data' => $schedules

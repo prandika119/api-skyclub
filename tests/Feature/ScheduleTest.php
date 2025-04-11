@@ -17,7 +17,7 @@ class ScheduleTest extends TestCase
     {
         $this->seed([FieldSeeder::class]);
         $field = Field::where('name', 'fieldTest')->first();
-        $response = $this->get('/api/fields/'.$field->id.'/schedules');
+        $response = $this->get('/api/fields/'.$field->id.'/schedules?start_date=2025-04-07&end_date=2025-04-13');
         dump(json_encode(json_decode($response->getContent()), JSON_PRETTY_PRINT));
 
         $response->assertStatus(200);

@@ -23,7 +23,7 @@ use Illuminate\Support\Facades\Route;
 
 // Route All can access
 Route::get('fields/{field:id}', [FieldController::class, 'show']);
-Route::get('fields/{field:id}/schedules', [FieldController::class, 'getSchedules']);
+Route::get('fields/{field:id}/schedules/', [FieldController::class, 'getSchedules']);
 
 
 Route::middleware('auth:sanctum')->group(function (){
@@ -31,7 +31,7 @@ Route::middleware('auth:sanctum')->group(function (){
     // Route Admin User
     Route::middleware('can:isAdmin')->group(function (){
         Route::post('/fields', [FieldController::class, 'store']);
-        Route::put('/fields/{field:id}/update', [FieldController::class, 'update']);
+        Route::put('/fields/{field:id}', [FieldController::class, 'update']);
 
         // field photos
         Route::post('/fields/{field:id}/photos', [FieldImageController::class, 'store']);

@@ -96,13 +96,13 @@ class CartTest extends TestCase
                 'schedules' => [
                     [
                         'field_id' => $field,
-                        'schedule_date' => '25-04-2025',
+                        'schedule_date' => '2025-04-25',
                         'schedule_time' => '8:00 - 9:00',
                         'price' => 50000,
                     ],
                     [
                         'field_id' => $field,
-                        'schedule_date' => '25-04-2025',
+                        'schedule_date' => '2025-04-25',
                         'schedule_time' => '9:00 - 10:00',
                         'price' => 50000,
                     ]
