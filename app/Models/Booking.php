@@ -14,6 +14,7 @@ class Booking extends Model
         'rented_by',
         'voucher_id',
         'user_offline',
-        'expired_at'
+        'expired_at',
+        'voucher_id'
     ];
 }

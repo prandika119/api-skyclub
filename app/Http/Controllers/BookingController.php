@@ -6,6 +6,7 @@ use App\Http\Requests\PaymentRequest;
 use App\Http\Requests\StoreBookingRequest;
 use App\Models\Booking;
 use App\Models\ListBooking;
+use App\Models\Voucher;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -56,10 +57,9 @@ class BookingController extends Controller
         $schedules_cart = collect($cart['schedules']);
         $schedule_dates = $schedules_cart->pluck('schedule_date')->unique()->values()->toArray();
         $schedules_booked = ListBooking::whereIn('date', $schedule_dates)->get();
+        $voucher = Voucher::where('id', $cart['voucher']['id'])->first() ?? null;
         $conflict = false;
 
-        //dump($schedule_dates);
-        //dump($schedules_booked);
         // Check Time to Payment
         if ($booking->expired_at < now()){
             return response([
@@ -108,9 +108,21 @@ class BookingController extends Controller
             $user->wallet()->update([
                 'balance' => $wallet - $cart['total_price']
             ]);
-            $booking->update([
-                'status' => 'accepted'
-            ]);
+
+            // Check Voucher
+            if ($cart['voucher']){
+                $booking->update([
+                    'status' => 'accepted',
+                    'voucher_id' => $voucher->id,
+                ]);
+                $voucher->update([
+                    'quota' => $voucher->quota - 1,
+                ]);
+            } else {
+                $booking->update([
+                    'status' => 'accepted',
+                ]);
+            }
 
             DB::commit();
 

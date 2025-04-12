@@ -148,5 +148,12 @@ abstract class TestCase extends BaseTestCase
         return $booking;
     }
 
-
+    protected function logicPaymentPage(): Booking
+    {
+        $user = $this->AuthUser();
+        $user->wallet()->update(['balance' => 1000000]);
+        $this->addDataToCart();
+        $booking = $this->newBooking($user);
+        return $booking;
+    }
 }

@@ -2,7 +2,9 @@
 
 namespace Tests\Feature;
 
+use App\Http\Resources\VoucherResource;
 use App\Models\Booking;
+use App\Models\Voucher;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -135,5 +137,33 @@ class BookingTest extends TestCase
 
         // Ensure the wallet balance remains unchanged
         $this->assertEquals(5000, $user->wallet->balance);
+    }
+
+    /**
+     * Test when the booking is use voucher
+     */
+    public function testBookingUseVoucher()
+    {
+        $user = $this->AuthUser();
+        $user->wallet()->update(['balance' => 1000000]); // satu juta
+        $this->addDataToCart();
+        $booking = $this->newBooking($user);
+
+        $cart = Session::get('cart', []);
+        $voucher = Voucher::where('code', 'DISCOUNT10')->first();
+        $cart['voucher'] = new VoucherResource($voucher);
+        $cart['discount'] = 10000;
+        $cart['total_price'] = 90000;
+        Session::put('cart', $cart);
+
+        $this->post('/api/voucher/' . $voucher . '/check');
+        $response = $this->post('/api/booking/payment', [
+            'booking_id' => $booking->id,
+        ]);
+        dump($response->getContent());
+        dump(Session::get('cart', []));
+        $response->assertStatus(200);
+        $user->refresh();
+        $this->assertEquals(910000, $user->wallet->balance);
     }
 }

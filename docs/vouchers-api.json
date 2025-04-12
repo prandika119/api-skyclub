@@ -333,6 +333,46 @@
                                     "properties": {
                                         "message": {
                                             "type": "string"
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "voucher": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer"
+                                                        },
+                                                        "code": {
+                                                            "type": "string"
+                                                        },
+                                                        "expire_date": {
+                                                            "type": "date"
+                                                        },
+                                                        "quota": {
+                                                            "type": "number"
+                                                        },
+                                                        "discount_price": {
+                                                            "type": "number"
+                                                        },
+                                                        "discount_percentage": {
+                                                            "type": "number"
+                                                        },
+                                                        "max_discount": {
+                                                            "type": "number"
+                                                        },
+                                                        "min_price": {
+                                                            "type": "number"
+                                                        }
+                                                    }
+                                                },
+                                                "discount": {
+                                                    "type": "number"
+                                                },
+                                                "total_price": {
+                                                    "type": "number"
+                                                }
+                                            }
                                         }
                                     }
                                 }
