@@ -9,6 +9,12 @@ use Illuminate\Support\Facades\Session;
 
 class VoucherController extends Controller
 {
+    /**
+     * Check voucher validity and apply discount
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\Response
+     */
     public function checkVoucher(Request $request)
     {
         $cart = Session::get('cart', []);

@@ -23,7 +23,7 @@ class BookingController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a Booking & Navigate Payment Page
      */
     public function store(StoreBookingRequest $request)
     {
@@ -47,6 +47,9 @@ class BookingController extends Controller
         ]);
     }
 
+    /**
+     * Payment for Booking
+     */
     public function payment(PaymentRequest $request)
     {
         $data = $request->validated();

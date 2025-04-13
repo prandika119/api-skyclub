@@ -11,6 +11,9 @@ use Illuminate\Support\Facades\DB;
 
 class FacilityController extends Controller
 {
+    /**
+     * Add a facility to a field
+     */
     public function addFacilityToField(Field $field, Facility $facility): Response
     {
         DB::table('fields_facilities')->insert([
@@ -23,6 +26,9 @@ class FacilityController extends Controller
         ], 201);
     }
 
+    /**
+     * Remove a facility from a field
+     */
     public function removeFacilityFromField(Field $field, Facility $facility): Response
     {
         DB::table('fields_facilities')->where('facility_id', $facility->id)->where('field_id', $field->id)->delete();

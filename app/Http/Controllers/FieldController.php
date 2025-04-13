@@ -14,7 +14,7 @@ use Illuminate\Http\Response;
 class FieldController extends Controller
 {
     /**
-     * Store a newly created resource in storage.
+     * Store a field
      */
     public function store(StoreFieldRequest $request): Response
     {
@@ -26,7 +26,7 @@ class FieldController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Display a field
      */
     public function show(Field $field): Response
     {
@@ -38,7 +38,7 @@ class FieldController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update a field
      */
     public function update(UpdateFieldRequest $request, Field $field): Response
     {
@@ -49,6 +49,11 @@ class FieldController extends Controller
         ], 200);
     }
 
+    /**
+     * Display a field's schedules
+     * @param Field $field
+     * @return Response
+     */
     public function getSchedules(Field $field): Response
     {
         $startDate = request()->query('start_date');

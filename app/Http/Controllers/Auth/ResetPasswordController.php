@@ -12,6 +12,12 @@ use Illuminate\Support\Facades\Password;
 class ResetPasswordController extends Controller
 {
 
+    /**
+     * Handle a forgot password request
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
     public function forgotPassword(ForgotPasswordRequest $request)
     {
         $request->validated();
@@ -26,6 +32,12 @@ class ResetPasswordController extends Controller
         return response()->json(['message' => 'Silakan atur password baru.', "data" => ["user" => ['email' => $user->email], 'token' => $token]], 200);
     }
 
+    /**
+     * Handle a reset password request
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
     public function resetPassword(ResetPasswordRequest $request)
     {
         $data = $request->validated();

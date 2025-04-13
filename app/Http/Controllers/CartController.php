@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Session;
 class CartController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display a list cart
      */
     public function index()
     {
@@ -22,7 +22,7 @@ class CartController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a schedule cart
      */
     public function store(StoreCartRequest $request)
     {
@@ -55,7 +55,7 @@ class CartController extends Controller
 
 
     /**
-     * Remove the specified resource from storage.
+     * Remove schedule to cart
      */
     public function destroy(string $id)
     {

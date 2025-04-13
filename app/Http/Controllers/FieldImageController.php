@@ -12,7 +12,10 @@ use Illuminate\Support\Facades\Storage;
 class FieldImageController extends Controller
 {
     /**
-     * Store a newly created resource in storage.
+     * Store a field image
+     * @param Field $field
+     * @param StoreFieldImageRequest $request
+     * @return Response
      */
     public function store(Field $field, StoreFieldImageRequest $request): Response
     {
@@ -32,7 +35,9 @@ class FieldImageController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove a field image
+     * @param FieldImage $fieldImage
+     * @return Response
      */
     public function destroy(FieldImage $fieldImage): Response
     {

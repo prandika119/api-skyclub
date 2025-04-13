@@ -11,6 +11,11 @@ use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
+    /**
+     * Get data of the authenticated user
+     *
+     * @return JsonResponse
+     */
     public function get (): JsonResponse{
         /* @var User $user */
         $user = auth()->user();
@@ -30,6 +35,12 @@ class UserController extends Controller
         ]);
     }
 
+    /**
+     * Update the authenticated user's data
+     *
+     * @param UpdateUserRequest $request
+     * @return Response
+     */
     public function update(UpdateUserRequest $request): Response
     {
         $data = $request->validated();

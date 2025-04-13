@@ -12,6 +12,9 @@ use Illuminate\Support\Facades\Request;
 
 class AuthController extends Controller
 {
+    /**
+     * Register a new user.
+     */
     public function register (RegisterRequest $request): Response{
         $data = $request->validated();
         $data['password'] = bcrypt($data['password']);
@@ -21,6 +24,9 @@ class AuthController extends Controller
         ], 201);
     }
 
+    /**
+     * Login a user.
+     */
     public function login(LoginRequest $request): JsonResponse
     {
         $data = $request->validated();
@@ -33,6 +39,11 @@ class AuthController extends Controller
         /* @var User $user */
         $user = auth()->user();
         $token = $user->createToken('authToken')->plainTextToken;
+        if (!$user->wallet) {
+            $user->wallet()->create([
+                'balance' => 0
+            ]);
+        }
         return response()->json([
             "message" => "Login Success",
             "data" => [
@@ -47,6 +58,9 @@ class AuthController extends Controller
         ]);
     }
 
+    /**
+     * Logout a user.
+     */
     public function logout(Request $request): JsonResponse
     {
         $user = auth()->user();
