@@ -35,6 +35,7 @@ abstract class TestCase extends BaseTestCase
         DB::delete('delete from facilities');
         DB::delete('delete from fields');
         DB::delete('delete from wallets');
+        DB::delete('delete from vouchers');
         $directoryProfilePhoto = storage_path('app/public/profile_photos');
         $directoryFieldImage = storage_path('app/public/fields');
         File::cleanDirectory($directoryProfilePhoto);

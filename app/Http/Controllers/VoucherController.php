@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreVoucherRequest;
+use App\Http\Requests\UpdateVoucherRequest;
 use App\Http\Resources\VoucherResource;
 use App\Models\Voucher;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 
@@ -89,15 +92,37 @@ class VoucherController extends Controller
      */
     public function index()
     {
-        //
+        $vouchers = Voucher::orderBy('created_at', 'desc')->get();
+        return response([
+            'message' => 'Successs',
+            'data' => VoucherResource::collection($vouchers)
+        ], 200);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreVoucherRequest $request)
     {
-        //
+        $data = $request->validated();
+        if (isset($data['discount_price']) && isset($data['discount_precentage'])){
+            return response([
+                'message' => 'Hanya satu diskon yang boleh diisi',
+                'data' => null
+            ], 400);
+        }
+        if (Carbon::parse($data['expire_date'])->isPast()) {
+            return response([
+                'message' => 'Tanggal kadaluarsa tidak boleh kurang dari hari ini',
+                'data' => null
+            ], 400);
+        }
+
+        Voucher::create($data);
+        return response([
+            'message' => 'Voucher created successfully',
+            'data' => null
+        ], 201);
     }
 
     /**
@@ -105,16 +130,37 @@ class VoucherController extends Controller
      */
     public function show(Voucher $voucher)
     {
-        //
+        return response([
+            'message' => 'Success',
+            'data' => new VoucherResource($voucher)
+        ], 200);
     }
 
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Voucher $voucher)
+    public function update(UpdateVoucherRequest $request, Voucher $voucher)
     {
-        //
+        $data = $request->validated();
+        if ($data['discount_price'] && $data['discount_percentage']) {
+            return response([
+                'message' => 'Hanya satu diskon yang boleh diisi',
+                'data' => null
+            ], 400);
+        }
+        if (Carbon::parse($data['expire_date'])->isPast()) {
+            return response([
+                'message' => 'Tanggal kadaluarsa tidak boleh kurang dari hari ini',
+                'data' => null
+            ], 400);
+        }
+
+        $voucher->update([$data]);
+        return response([
+            'message' => 'Voucher updated successfully',
+            'data' => null
+        ], 200);
     }
 
     /**
@@ -122,6 +168,34 @@ class VoucherController extends Controller
      */
     public function destroy(Voucher $voucher)
     {
-        //
+        // Cek apakah voucher ada
+        dump('yuyuyu');
+        dump($voucher);
+        if (!$voucher) {
+            return response([
+                'message' => 'Voucher tidak ditemukan',
+                'data' => null
+            ], 404);
+        }
+        // Pastikan voucher tidak digunakan dalam transaksi
+        if ($voucher->bookings()->exists()) {
+            return response([
+                'message' => 'Voucher tidak dapat dihapus karena sudah digunakan dalam transaksi',
+                'data' => null
+            ], 400);
+        }
+        // Hapus voucher
+        try {
+            $voucher->delete();
+        } catch (\Exception $e) {
+            return response([
+                'message' => 'Gagal menghapus voucher',
+                'data' => null
+            ], 500);
+        }
+        return response([
+            'message' => 'Voucher deleted successfully',
+            'data' => null
+        ], 200);
     }
 }

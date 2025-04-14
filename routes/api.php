@@ -41,6 +41,13 @@ Route::middleware('auth:sanctum')->group(function (){
         // field facilities
         Route::post('/fields/{field}/facilities/{facility}', [FacilityController::class, 'addFacilityToField']);
         Route::delete('/fields/{field}/facilities/{facility}', [FacilityController::class, 'removeFacilityFromField']);
+
+        // Route Voucher Admin
+        Route::post('/vouchers', [VoucherController::class, 'store']);
+        Route::get('/vouchers/{voucher:id}', [VoucherController::class, 'show']);
+        Route::put('/vouchers/{vouchers:id}', [VoucherController::class, 'update']);
+        Route::delete('/vouchers/{voucher:id}', [VoucherController::class, 'destroy']);
+
     });
 
     // Route Authenticated User
@@ -54,6 +61,7 @@ Route::middleware('auth:sanctum')->group(function (){
     Route::delete('/cart/{id}', [CartController::class, 'destroy']);
 
     // Route Booking
+    Route::get('/booking', [BookingController::class, 'index']);
     Route::post('/booking', [BookingController::class, 'store']);
     Route::post('/booking/payment', [BookingController::class, 'payment']);
 
