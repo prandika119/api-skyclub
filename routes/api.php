@@ -7,6 +7,8 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\FacilityController;
 use App\Http\Controllers\FieldController;
 use App\Http\Controllers\FieldImageController;
+use App\Http\Controllers\ListBookingController;
+use App\Http\Controllers\SparingController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VoucherController;
 use Illuminate\Support\Facades\Route;
@@ -23,8 +25,9 @@ use Illuminate\Support\Facades\Route;
 */
 
 // Route All can access
-Route::get('fields/{field:id}', [FieldController::class, 'show']);
-Route::get('fields/{field:id}/schedules/', [FieldController::class, 'getSchedules']);
+Route::get('fields/{field:id}', [FieldController::class, 'show']); // get data field by id
+Route::get('fields/{field:id}/schedules/', [FieldController::class, 'getSchedules']); // get data field schedule by id
+Route::get('/sparings', [SparingController::class, 'index']); // get data list sparing in sparing page
 
 
 Route::middleware('auth:sanctum')->group(function (){
@@ -67,6 +70,18 @@ Route::middleware('auth:sanctum')->group(function (){
 
     // Route Voucher
     Route::post('/voucher/{code}', [VoucherController::class, 'checkVoucher']);
+
+    // Route History Booking
+    Route::get('/list-booking', [ListBookingController::class, 'index']);
+    Route::get('/list-booking/{listBooking:id}', [ListBookingController::class, 'show']);
+    Route::post('/list-booking/{listBooking:id}/request-reschedule', [ListBookingController::class, 'requestReschedule']);
+    Route::post('/list-booking/{listBooking:id}/request-cancel', [ListBookingController::class, 'requestCancel']);
+
+    // Route Sparing
+    Route::post('/sparings', [SparingController::class, 'store']);
+    Route::post('/sparings/{sparing:id}/request', [SparingController::class, 'addSparingRequest']);
+    Route::post('/sparings/{sparingRequest:id}/accept', [SparingController::class, 'acceptSparingRequest']);
+    Route::post('/sparings/{sparingRequest:id}/reject', [SparingController::class, 'rejectSparingRequest']);
 
 });
 

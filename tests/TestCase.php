@@ -8,6 +8,7 @@ use App\Models\Field;
 use App\Models\FieldImage;
 use App\Models\ListBooking;
 use App\Models\Schedule;
+use App\Models\Sparing;
 use App\Models\User;
 use Carbon\Carbon;
 use Database\Seeders\FacilitySeeder;
@@ -27,6 +28,8 @@ abstract class TestCase extends BaseTestCase
     protected function setUp(): void
     {
         parent::setUp();
+        DB::delete('delete from sparing_requests');
+        DB::delete('delete from sparings');
         DB::delete('delete from list_bookings');
         DB::delete('delete from bookings');
         DB::delete('delete from users');
@@ -43,10 +46,26 @@ abstract class TestCase extends BaseTestCase
         Session::forget('cart');
     }
 
+    /**
+     * Login User
+     */
     protected function AuthUser(): User
     {
         $this->seed([UserSeeder::class]);
         $user = User::where('username', 'test')->first();
+        $this->actingAs($user);
+        return $user;
+    }
+
+    protected function AuthUser2()
+    {
+        $user = User::create([
+            'name' => 'test2',
+            'username' => 'test2',
+            'email' => 'test2@gmail.com',
+            'no_telp' => '082234567891',
+            'password' => bcrypt('password')
+        ]);
         $this->actingAs($user);
         return $user;
     }
@@ -131,7 +150,10 @@ abstract class TestCase extends BaseTestCase
         return $booking;
     }
 
-    protected function paymentBooking($user, $date): Booking
+    /**
+     * Create a new booking & payment successfully
+     */
+    protected function paymentBooking($user, $date): ListBooking
     {
         $field = $this->CreateDataField();
         $booking = Booking::create([
@@ -139,16 +161,19 @@ abstract class TestCase extends BaseTestCase
             'rented_by' => $user->id,
             'expired_at' => now()->addMinutes(5)
         ]);
-        ListBooking::create([
+        $list_booking = ListBooking::create([
             'date' => Carbon::parse($date),
             'session' => '8:00 - 9:00',
             'price' => '50000',
             'field_id' => $field->id,
             'booking_id' => $booking->id
         ]);
-        return $booking;
+        return $list_booking;
     }
 
+    /**
+     * Logic navigate to payment page
+     */
     protected function logicPaymentPage(): Booking
     {
         $user = $this->AuthUser();
@@ -156,5 +181,17 @@ abstract class TestCase extends BaseTestCase
         $this->addDataToCart();
         $booking = $this->newBooking($user);
         return $booking;
+    }
+
+    protected function createSparing(User $user, $date): Sparing
+    {
+        $listBooking = $this->paymentBooking($user, $date);
+        $sparing = Sparing::create([
+            'list_booking_id' => $listBooking->id,
+            'description' => 'Sparing Test',
+            'status' => 'waiting',
+            'created_by' => $user->id
+        ]);
+        return $sparing;
     }
 }

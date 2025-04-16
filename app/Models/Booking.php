@@ -17,4 +17,9 @@ class Booking extends Model
         'expired_at',
         'voucher_id'
     ];
+
+    public function listBooking()
+    {
+        return $this->hasMany(ListBooking::class);
+    }
 }

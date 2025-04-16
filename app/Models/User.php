@@ -52,4 +52,13 @@ class User extends Authenticatable
     {
         return $this->hasOne(Wallet::class);
     }
+
+    public function bookings()
+    {
+        return $this->hasMany(Booking::class, 'created_by');
+    }
+    public function sparings()
+    {
+        return $this->hasMany(Sparing::class, 'created_by');
+    }
 }
