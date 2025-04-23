@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class ListBookingResource extends JsonResource
+class ListBookingSparingResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -19,9 +19,10 @@ class ListBookingResource extends JsonResource
             'date' => $this->date,
             'session' => $this->session,
             'price' => $this->price,
-            'status' => $this->booking->status,
-            'order_date' => $this->booking->order_date,
+            'status' => $this->sparing->status,
             'field' => new FieldSimpleResource($this->field),
+            'user' => new UserResource($this->sparing->createdBy),
+            'sparing_request' => $this->sparing->sparingRequest,
         ];
     }
 }

@@ -36,7 +36,7 @@ class Schedule
     //Generate Schedule 2 Months a go
     public static function generateSchedule(Field $field, ?string $startDate = null, ?string $endDate = null): Collection
     {
-        dump('Start Date: ' . $startDate);
+        //dump('Start Date: ' . $startDate);
         // Inisialisasi default hanya jika start/end kosong
         if (!$startDate || !$endDate) {
             self::initialize();
@@ -79,40 +79,6 @@ class Schedule
             }
         }
         return collect(self::$schedules);
-
-
-        // looping for create schedule 2 months a go
-//        self::initialize();
-//        $schedules_booked = ListBooking::where('date', '>=', self::$startOfWeek)->where('field_id', $field->id)->get();
-//
-//        for ($i = 0; $i < self::$daysCount+1; $i++) {
-//            $date = self::$startOfWeek->copy()->addDays($i);
-//            self::$schedules[$i] = new Schedule($date->format('d-m-Y'), $field);
-//
-//            // check if date is weekend and then change price
-//            if ($date->isWeekend()) {
-//                self::$schedules[$i]->price = $field->weekend_price;
-//            }
-//
-//            // format time slots
-//            for ($j = 0; $j < 24; $j++) {
-//                // check if schedules booked
-//                $booked = $schedules_booked->where('date', $date->format('Y-m-d'))
-//                    ->where('session', $j . ':00 - ' . ($j + 1) . ':00')->first();
-//                if ($booked) {
-//                    self::$schedules[$i]->time_slots[$j] = [
-//                        'time' => $j . ':00 - ' . ($j + 1) . ':00',
-//                        'is_available' => false
-//                    ];
-//                } else{
-//                    self::$schedules[$i]->time_slots[$j] = [
-//                        'time' => $j . ':00 - ' . ($j + 1) . ':00',
-//                        'is_available' => true
-//                    ];
-//                }
-//
-//            }
-//        }
 
     }
 }
