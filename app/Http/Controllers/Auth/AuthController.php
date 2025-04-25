@@ -19,6 +19,7 @@ class AuthController extends Controller
         $data = $request->validated();
         $data['password'] = bcrypt($data['password']);
         $user = User::create($data);
+        $user->wallet()->create(['balance' => 0]);
         return response([
             'message' => 'User created successfully'
         ], 201);
@@ -33,17 +34,12 @@ class AuthController extends Controller
         if (!auth()->attempt($data)) {
             return response()->json([
                 'message' => "Unauthorize",
-                "errors" => ["message" => "Username or Password Wrong"]
+                "errors" =>  "Username or Password Wrong"
             ], 401);
         }
         /* @var User $user */
         $user = auth()->user();
         $token = $user->createToken('authToken')->plainTextToken;
-        if (!$user->wallet) {
-            $user->wallet()->create([
-                'balance' => 0
-            ]);
-        }
         return response()->json([
             "message" => "Login Success",
             "data" => [
