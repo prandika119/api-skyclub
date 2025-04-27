@@ -25,7 +25,7 @@ class ListBookingController extends Controller
                 ->whereRelation('booking', 'rented_by', $user->id)
                 ->get();
             return response([
-                'message' => 'Booking List',
+                'message' => 'Booking List Past',
                 'data' => [
                     'bookings' => ListBookingResource::collection($bookings),
                 ]

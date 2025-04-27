@@ -26,4 +26,6 @@ class ListBooking extends Model
     {
         return $this->belongsTo(Field::class, 'field_id');
     }
+
+
 }

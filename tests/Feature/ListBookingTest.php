@@ -112,7 +112,7 @@ class ListBookingTest extends TestCase
         dump($response->getContent());
         $response->assertStatus(200);
         $response->assertJson([
-            'message' => 'Booking List',
+            'message' => 'Booking List Past',
             'data' => [
                 'bookings' => [
 
@@ -136,7 +136,7 @@ class ListBookingTest extends TestCase
         dump($response->getContent());
         $response->assertStatus(200);
         $response->assertJson([
-            'message' => 'Booking List',
+            'message' => 'Booking List Past',
             'data' => [
                 'bookings' => [
 

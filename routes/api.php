@@ -9,6 +9,7 @@ use App\Http\Controllers\FacilityController;
 use App\Http\Controllers\FieldController;
 use App\Http\Controllers\FieldImageController;
 use App\Http\Controllers\ListBookingController;
+use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\SparingController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VoucherController;
@@ -31,6 +32,7 @@ Route::get('fields/{field:id}/schedules/', [FieldController::class, 'getSchedule
 Route::get('/sparings', [SparingController::class, 'index']); // get data list sparing in sparing page
 Route::get('articles', [ArticleController::class, 'index']); // get data list article
 Route::get('articles/{article:id}', [ArticleController::class, 'show']); // get data article by id
+Route::get('/reviews', [ReviewController::class, 'index']); // get data review
 
 
 Route::middleware('auth:sanctum')->group(function (){
@@ -97,6 +99,9 @@ Route::middleware('auth:sanctum')->group(function (){
 
     // Route MyBooking
     Route::get('/my-booking', [ListBookingController::class, 'index']);
+
+    // Route Review
+    Route::post('/reviews', [ReviewController::class, 'store']);
 });
 
 // Route only guest
