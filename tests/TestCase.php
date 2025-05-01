@@ -7,6 +7,8 @@ use App\Models\Facility;
 use App\Models\Field;
 use App\Models\FieldImage;
 use App\Models\ListBooking;
+use App\Models\RequestCancel;
+use App\Models\RequestReschedule;
 use App\Models\Schedule;
 use App\Models\Sparing;
 use App\Models\User;
@@ -28,6 +30,8 @@ abstract class TestCase extends BaseTestCase
     protected function setUp(): void
     {
         parent::setUp();
+        DB::delete('delete from request_cancels');
+        DB::delete('delete from request_reschedules');
         DB::delete('delete from reviews');
         DB::delete('delete from articles');
         DB::delete('delete from sparing_requests');
@@ -196,5 +200,31 @@ abstract class TestCase extends BaseTestCase
             'created_by' => $user->id
         ]);
         return $sparing;
+    }
+
+    protected function requestCancel(ListBooking $listBooking, User $user)
+    {
+        $listBooking->update([
+            'status_request' => 'Cancel Request',
+        ]);
+        $requestCancel = RequestCancel::create([
+            'list_booking_id' => $listBooking->id,
+            'user_id' => $user->id,
+            'reason' => "test reason",
+        ]);
+        return $requestCancel;
+    }
+
+    protected function requestReschedule(ListBooking $listBooking1, ListBooking $listBooking2, User $user)
+    {
+        $listBooking1->update([
+            'status_request' => 'Reschedule Request',
+        ]);
+        $requestReschedule = RequestReschedule::create([
+            'old_list_booking_id' => $listBooking1->id,
+            'user_id' => $user->id,
+            'new_list_booking_id' => $listBooking2->id,
+        ]);
+        return $requestReschedule;
     }
 }

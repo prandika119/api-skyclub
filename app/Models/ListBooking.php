@@ -26,6 +26,10 @@ class ListBooking extends Model
     {
         return $this->belongsTo(Field::class, 'field_id');
     }
+    public function requestCancel(): HasOne
+    {
+        return $this->hasOne(RequestCancel::class, 'list_booking_id');
+    }
 
 
 }

@@ -9,10 +9,14 @@ use App\Http\Controllers\FacilityController;
 use App\Http\Controllers\FieldController;
 use App\Http\Controllers\FieldImageController;
 use App\Http\Controllers\ListBookingController;
+use App\Http\Controllers\RequestCancelController;
+use App\Http\Controllers\RequestRescheduleController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\SparingController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VoucherController;
+use App\Models\RequestCancel;
+use App\Models\RequestReschedule;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -65,6 +69,13 @@ Route::middleware('auth:sanctum')->group(function (){
         Route::delete('/articles/{article:id}', [ArticleController::class, 'destroy']);
         // Route::post('articles/{article}')
 
+        // Cancel & Reschedule Request
+        Route::get('/booking/request-reschedule', [RequestRescheduleController::class, 'index']);
+        Route::get('/booking/request-cancel', [RequestCancelController::class, 'index']);
+        Route::post('/booking/{requestReschedule:id}/accept-reschedule', [RequestRescheduleController::class, 'acceptRequest']);
+        Route::post('/booking/{requestReschedule:id}/reject-reschedule', [RequestRescheduleController::class, 'rejectRequest']);
+        Route::post('/booking/{requestCancel:id}/accept-cancel', [RequestCancelController::class, 'acceptRequest']);
+        Route::post('/booking/{requestCancel:id}/reject-cancel', [RequestCancelController::class, 'rejectRequest']);
     });
 
     // Route Authenticated User
@@ -86,10 +97,10 @@ Route::middleware('auth:sanctum')->group(function (){
     Route::post('/voucher/{code}', [VoucherController::class, 'checkVoucher']);
 
     // Route History Booking
+    //Route::get('/list-booking/{listBooking:id}', [ListBookingController::class, 'show']);
     //Route::get('/list-booking', [ListBookingController::class, 'index']);
-    Route::get('/list-booking/{listBooking:id}', [ListBookingController::class, 'show']);
-    Route::post('/list-booking/{listBooking:id}/request-reschedule', [ListBookingController::class, 'requestReschedule']);
-    Route::post('/list-booking/{listBooking:id}/request-cancel', [ListBookingController::class, 'requestCancel']);
+    //Route::post('/list-booking/{listBooking:id}/request-reschedule', [ListBookingController::class, 'addRequest']);
+    //Route::post('/list-booking/{listBooking:id}/request-cancel', [ListBookingController::class, 'addRequest']);
 
     // Route Sparing
     Route::post('/sparings', [SparingController::class, 'store']);
@@ -99,6 +110,8 @@ Route::middleware('auth:sanctum')->group(function (){
 
     // Route MyBooking
     Route::get('/my-booking', [ListBookingController::class, 'index']);
+    Route::post('/my-booking/{listBooking:id}/request-reschedule', [RequestRescheduleController::class, 'addRequest']);
+    Route::post('/my-booking/{listBooking:id}/request-cancel', [RequestCancelController::class, 'addRequest']);
 
     // Route Review
     Route::post('/reviews', [ReviewController::class, 'store']);

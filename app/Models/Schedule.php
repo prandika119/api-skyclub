@@ -54,6 +54,14 @@ class Schedule
             $start->toDateString(), $end->toDateString()
         ])
             ->where('field_id', $field->id)
+            ->where(function ($subQuery) {
+                $subQuery->where('status', '!=', 'canceled')
+
+                    ->orWhere('status', null);
+            })
+            ->whereHas('booking', function ($query) {
+                $query->where('status', '!=', 'canceled');
+            })
             ->get();
 
         for ($i = 0; $i <= $daysCount; $i++) {
