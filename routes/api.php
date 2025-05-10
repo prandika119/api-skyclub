@@ -76,11 +76,16 @@ Route::middleware('auth:sanctum')->group(function (){
         Route::post('/booking/{requestReschedule:id}/reject-reschedule', [RequestRescheduleController::class, 'rejectRequest']);
         Route::post('/booking/{requestCancel:id}/accept-cancel', [RequestCancelController::class, 'acceptRequest']);
         Route::post('/booking/{requestCancel:id}/reject-cancel', [RequestCancelController::class, 'rejectRequest']);
+
+        // Admin Booking User Offline
+        Route::post('/booking/user-offline', [BookingController::class, 'selectUser']);
     });
 
     // Route Authenticated User
     Route::get('/users/current', [UserController::class, 'get']);
     Route::patch('/users/current', [UserController::class, 'update']);
+    Route::get('/users/current/notifications', [UserController::class, 'getAllNotifications']);
+    Route::post('/users/current/notifications/{id}/read', [UserController::class, 'readNotification']);
     Route::post('/users/logout', [AuthController::class, 'logout'])->name('logout');
 
     // Route Cart
@@ -115,6 +120,10 @@ Route::middleware('auth:sanctum')->group(function (){
 
     // Route Review
     Route::post('/reviews', [ReviewController::class, 'store']);
+
+    // Route Notifications
+    Route::get('/notifications', [UserController::class, 'getNotifications']);
+    Route::post('/notifications/{notification:id}/read', [UserController::class, 'readNotification']);
 });
 
 // Route only guest

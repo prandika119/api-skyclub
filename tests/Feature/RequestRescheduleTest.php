@@ -27,6 +27,7 @@ class RequestRescheduleTest extends TestCase
             'old_list_booking_id' => $list_booking->id,
             'user_id' => $user->id
         ]);
+        $this->assertDatabaseCount('notifications', 1);
     }
     public function testAddRequestMoreThanOldPrice(): void
     {
@@ -45,6 +46,7 @@ class RequestRescheduleTest extends TestCase
             'old_list_booking_id' => $list_booking->id,
             'user_id' => $user->id
         ]);
+        $this->assertDatabaseCount('notifications', 0);
     }
 
     public function testAddRequestScheduleAlreadyBooked(): void
@@ -64,6 +66,7 @@ class RequestRescheduleTest extends TestCase
             'old_list_booking_id' => $list_booking->id,
             'user_id' => $user->id
         ]);
+        $this->assertDatabaseCount('notifications', 0);
     }
 
     public function testGetListReschedule()
@@ -98,6 +101,7 @@ class RequestRescheduleTest extends TestCase
             'id' => $request->new_list_booking_id,
             'status_request' => "Reschedule"
         ]);
+        $this->assertDatabaseCount('notifications', 1);
     }
 
     public function testRejectRescheduleSuccess()
@@ -116,5 +120,6 @@ class RequestRescheduleTest extends TestCase
         $this->assertDatabaseMissing('request_reschedules', [
             'id' => $request->id,
         ]);
+        $this->assertDatabaseCount('notifications', 1);
     }
 }

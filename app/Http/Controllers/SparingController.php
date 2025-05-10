@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\AcceptedSparingEvent;
+use App\Events\RejectedSparingEvent;
+use App\Events\RequestSparingEvent;
 use App\Http\Resources\SparingResource;
 use App\Models\Sparing;
 use App\Http\Requests\StoreSparingRequest;
@@ -40,7 +43,7 @@ class SparingController extends Controller
          */
         $user = auth()->user();
         // Check if the user has a team
-        
+
         if (!$user->team){
             return response()->json([
                 'message' => 'Bad Request',
@@ -101,11 +104,17 @@ class SparingController extends Controller
             ], 400);
         }
 
-        DB::table('sparing_requests')->insert([
+//        $sparingReq = DB::table('sparing_requests')->insert([
+//            'user_id' => $user->id,
+//            'sparing_id' => $sparing->id,
+//            'status' => 'waiting'
+//        ]);
+        $sparingReq = SparingRequest::create([
             'user_id' => $user->id,
             'sparing_id' => $sparing->id,
             'status' => 'waiting'
         ]);
+        event(new RequestSparingEvent($sparingReq));
         return response()->json([
             'message' => 'Sukses',
         ], 200);
@@ -152,10 +161,12 @@ class SparingController extends Controller
         $allRequests = SparingRequest::where('sparing_id', $sparing->id)->where('status', 'waiting')->get();
         foreach ($allRequests as $request) {
             $request->update(['status' => 'rejected']);
+            event(new RejectedSparingEvent($request));
         }
         $sparing->update(['status' => 'done']);
 
         // Notify the user who requested the sparing
+        event(new AcceptedSparingEvent($sparingRequest));
 
         // Return a success response
         return response()->json([
@@ -200,7 +211,7 @@ class SparingController extends Controller
 
         // Update the sparing status to 'done'
         $sparingRequest->update(['status' => 'rejected']);
-
+        event(new RejectedSparingEvent($sparingRequest));
         // Return a success response
         return response()->json([
             'message' => 'Sukses'

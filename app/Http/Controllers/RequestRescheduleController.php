@@ -2,11 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\AcceptedRescheduleEvent;
+use App\Events\RejectedRescheduleEvent;
+use App\Events\RequestRescheduleEvent;
 use App\Http\Resources\RescheduleRequestResource;
 use App\Models\ListBooking;
 use App\Models\RequestReschedule;
 use App\Http\Requests\StoreRequestRescheduleRequest;
 use App\Http\Requests\UpdateRequestRescheduleRequest;
+use App\Models\User;
+use App\Notifications\RequestRescheduleNotification;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
@@ -99,11 +104,15 @@ class RequestRescheduleController extends Controller
             ]);
 
             DB::commit();
+            // Send Notification to Admin
+            event(new RequestRescheduleEvent($listBooking));
+
             return response([
                 'message' => "Berhasil Mengajukan Reschedule, Silahkan Menunggu Persetujuan Admin",
             ]);
         } catch (\Exception $e){
             DB::rollBack();
+            dump($e);
             return response([
                 'message' => 'Internal Server Error',
                 'errors' => 'Terjadi Kesalahan Di Server'
@@ -135,6 +144,7 @@ class RequestRescheduleController extends Controller
                 'status_request' => 'Canceled'
             ]);
             DB::commit();
+            event(new AcceptedRescheduleEvent($newListBooking));
             return response([
                 'message' => 'Request Reschedule Accepted',
                 'data' => new RescheduleRequestResource($requestReschedule)
@@ -173,6 +183,8 @@ class RequestRescheduleController extends Controller
             $requestReschedule->delete();
 
             DB::commit();
+            // Send Notification to User
+            event(new RejectedRescheduleEvent($oldListBooking));
             return response([
                 'message' => 'Request Reschedule Rejected',
             ]);

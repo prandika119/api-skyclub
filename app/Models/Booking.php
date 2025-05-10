@@ -26,4 +26,8 @@ class Booking extends Model
     {
         return $this->hasOne(Review::class);
     }
+    public function rentedBy()
+    {
+        return $this->belongsTo(User::class, 'rented_by', 'id');
+    }
 }

@@ -55,15 +55,15 @@ class Schedule
         ])
             ->where('field_id', $field->id)
             ->where(function ($subQuery) {
-                $subQuery->where('status', '!=', 'canceled')
-
-                    ->orWhere('status', null);
+                $subQuery
+                    ->whereNull('status_request')
+                    ->orWhere('status_request', '!=', 'canceled');
             })
             ->whereHas('booking', function ($query) {
                 $query->where('status', '!=', 'canceled');
             })
             ->get();
-
+//           dump('Booked Schedules: ' . $schedules_booked->count());
         for ($i = 0; $i <= $daysCount; $i++) {
             $date = $start->copy()->addDays($i);
             self::$schedules[$i] = new Schedule($date->format('d-m-Y'), $field);

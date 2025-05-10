@@ -113,7 +113,7 @@ class AuthTest extends TestCase
         $response->assertStatus(401);
         $response->assertJson([
             'message' => 'Unauthorize',
-            "errors" => ["message" => "Username or Password Wrong"]
+            "errors" => "Username or Password Wrong"
         ]);
     }
 
@@ -128,7 +128,7 @@ class AuthTest extends TestCase
         $response->assertStatus(401);
         $response->assertJson([
             'message' => 'Unauthorize',
-            "errors" => ["message" => "Username or Password Wrong"]
+            "errors" => "Username or Password Wrong"
         ]);
     }
 
@@ -148,11 +148,12 @@ class AuthTest extends TestCase
                 "name" => $user->name,
                 "email" => $user->email,
                 "no_telp" => $user->no_telp,
-                "tema" => $user->team,
+                "team" => $user->team,
                 "address" => $user->address,
                 "date_of_birth" => $user->date_of_birth,
                 "profile_photo" => $user->profile_photo,
-                'wallet' => $user->wallet->balance
+                'wallet' => $user->wallet->balance,
+                'notif' => 0
             ]
         ]);
     }

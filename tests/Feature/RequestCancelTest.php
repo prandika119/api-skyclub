@@ -26,6 +26,7 @@ class RequestCancelTest extends TestCase
             'list_booking_id' => $listBooking->id,
             'reason' => 'test reason',
         ]);
+        $this->assertDatabaseCount('notifications', 1);
     }
 
     public function testAddRequestCancelEmptyReason(): void
@@ -39,6 +40,7 @@ class RequestCancelTest extends TestCase
         dump($response->getContent());
         $response->assertStatus(422);
         $response->assertJsonValidationErrors(['reason']);
+        $this->assertDatabaseCount('notifications', 0);
     }
 
     public function testAddRequestCancelBookingTimeIsOver(): void
@@ -55,6 +57,7 @@ class RequestCancelTest extends TestCase
             'list_booking_id' => $listBooking->id,
             'reason' => 'test reason',
         ]);
+        $this->assertDatabaseCount('notifications', 0);
     }
 
     public function testGetRequestCancel(): void
@@ -88,6 +91,7 @@ class RequestCancelTest extends TestCase
             'id' => $requestCancel->id,
             'reply' => 'Diterima',
         ]);
+        $this->assertDatabaseCount('notifications', 1);
     }
 
     public function testRejectRequestCancel(): void
@@ -109,6 +113,7 @@ class RequestCancelTest extends TestCase
             'id' => $requestCancel->id,
             'reply' => 'test reply',
         ]);
+        $this->assertDatabaseCount('notifications', 1);
 
     }
 }

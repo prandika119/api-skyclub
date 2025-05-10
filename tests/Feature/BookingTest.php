@@ -6,6 +6,7 @@ use App\Http\Resources\VoucherResource;
 use App\Models\Booking;
 use App\Models\Voucher;
 use Carbon\Carbon;
+use Database\Seeders\UserSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Session;
@@ -38,6 +39,8 @@ class BookingTest extends TestCase
         ]);
         dump($response->getContent());
         $response->assertStatus(200);
+        // check there are two notification
+        $this->assertDatabaseCount('notifications', 2);
     }
 
     public function testSuccessBooking2Items()

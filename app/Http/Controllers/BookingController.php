@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\SuccessBookingEvent;
 use App\Http\Requests\PaymentRequest;
 use App\Http\Requests\StoreBookingRequest;
 use App\Models\Booking;
 use App\Models\ListBooking;
+use App\Models\User;
 use App\Models\Voucher;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -29,13 +31,15 @@ class BookingController extends Controller
     {
         $data = $request->validated();
         $user = auth()->user();
-        $booking = Booking::create(
-            [
-                'order_date' => now(),
-                'rented_by' => $user->id,
-                'expired_at' => now()->addMinutes(5),
-            ]
-        );
+        if ($user->role != 'admin'){
+            $booking = Booking::create(
+                [
+                    'order_date' => now(),
+                    'rented_by' => $user->id,
+                    'expired_at' => now()->addMinutes(5),
+                ]
+            );
+        }
         $cart = Session::get('cart', []);
 
         return response([
@@ -46,6 +50,42 @@ class BookingController extends Controller
             ]
         ]);
     }
+
+    public function storeOffline()
+    {
+        $user = auth()->user();
+        $cart = Session::get('cart', []);
+
+        return response([
+            'message' => 'Booking Created',
+            'data' => [
+                'cart' => $cart
+            ]
+        ]);
+    }
+
+    public function selectUser(Request $request)
+    {
+        $data = $request->validate([
+            'user_id' => 'required|exists:users,id'
+        ]);
+        $user = User::where('id', $data['user_id'])->first();
+        $booking = Booking::create(
+            [
+                'order_date' => now(),
+                'rented_by' => $user->id,
+                'expired_at' => now()->addMinutes(5),
+            ]
+        );
+        return response([
+            'message' => 'User Selected',
+            'data' => [
+                'user' => $user,
+                'booking' => $booking
+            ]
+        ]);
+    }
+
 
     /**
      * Payment for Booking
@@ -60,7 +100,8 @@ class BookingController extends Controller
         $schedules_cart = collect($cart['schedules']);
         $schedule_dates = $schedules_cart->pluck('schedule_date')->unique()->values()->toArray();
         $schedules_booked = ListBooking::whereIn('date', $schedule_dates)->get();
-        $voucher = Voucher::where('id', $cart['voucher']['id'])->first() ?? null;
+        $voucher = isset($cart['voucher']['id'])? Voucher::find($cart['voucher']['id']) : null;
+        //$voucher = Voucher::where('id', $cart['voucher']['id'])->first() ?? null;
         $conflict = false;
 
         // Check Time to Payment
@@ -72,7 +113,7 @@ class BookingController extends Controller
         }
 
         // Check Wallet Balance
-        if ($wallet < $cart['total_price']){
+        if ($wallet < $cart['total_price'] && $user->role != 'admin'){
             return response([
                 'message' => 'Bad Request',
                 'errors' => 'Saldo tidak mencukupi'
@@ -108,12 +149,14 @@ class BookingController extends Controller
                     'booking_id' => $data['booking_id']
                 ]);
             }
-            $user->wallet()->update([
-                'balance' => $wallet - $cart['total_price']
-            ]);
+            if ($user->role != 'admin'){
+                $user->wallet()->update([
+                    'balance' => $wallet - $cart['total_price']
+                ]);
+            }
 
             // Check Voucher
-            if ($cart['voucher']){
+            if ($voucher){
                 $booking->update([
                     'status' => 'accepted',
                     'voucher_id' => $voucher->id,
@@ -128,6 +171,10 @@ class BookingController extends Controller
             }
 
             DB::commit();
+
+//            $rentedBy = User::where('id', $booking->rented_by)->first();
+            // Send Notification
+            event(new SuccessBookingEvent($user, $booking));
 
             return response([
                 'message' => 'Jadwal berhasil dibooking'

@@ -25,13 +25,17 @@ class UserSeeder extends Seeder
             'balance' => 0
         ]);
 
-        User::create([
+        $admin = User::create([
             'name' => 'admin',
             'username' => 'admin',
             'email' => 'admin@gmail.com',
             'no_telp' => '081234567892',
             'role' => 'admin',
             'password' => bcrypt('password'),
+        ]);
+
+        $admin->wallet()->create([
+            'balance' => 0
         ]);
     }
 }

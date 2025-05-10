@@ -105,6 +105,7 @@ class SparingTest extends TestCase
             'status' => 'waiting',
         ]);
         dump($response->getContent());
+        $this->assertDatabaseCount('notifications', 1);
     }
 
     public function testAddSparingRequestWithoutTeam()
@@ -127,6 +128,7 @@ class SparingTest extends TestCase
             'status' => 'waiting',
         ]);
         dump($response->getContent());
+        $this->assertDatabaseCount('notifications', 0);
     }
 
     public function testAddSparingRequestAlreadyRequested()
@@ -149,6 +151,7 @@ class SparingTest extends TestCase
             'message' => 'Bad Request',
             'errors' => 'Sparing sudah diminta',
         ]);
+        $this->assertDatabaseCount('notifications', 0);
     }
 
     public function testAddSparingRequestAlreadyDone()
@@ -167,6 +170,7 @@ class SparingTest extends TestCase
             'message' => 'Bad Request',
             'errors' => 'Sparing sudah ditutup',
         ]);
+        $this->assertDatabaseCount('notifications', 0);
     }
 
     public function testAddSparingRequestOwnSparing()
@@ -183,6 +187,7 @@ class SparingTest extends TestCase
             'message' => 'Bad Request',
             'errors' => 'Anda tidak bisa meminta sparing milik sendiri',
         ]);
+        $this->assertDatabaseCount('notifications', 0);
     }
 
     public function testAcceptSparingRequestSuccess()
@@ -222,6 +227,8 @@ class SparingTest extends TestCase
             'id' => $sparing->id,
             'status' => 'done',
         ]);
+
+        $this->assertDatabaseCount('notifications', 2);
     }
 
     public function testAcceptSparingRequestUnauthorized()
@@ -245,6 +252,7 @@ class SparingTest extends TestCase
             'message' => 'Bad Request',
             'errors' => 'Anda tidak bisa menerima sparing milik orang lain',
         ]);
+        $this->assertDatabaseCount('notifications', 0);
     }
 
     public function testAcceptSparingRequestAlreadyDone()
@@ -270,6 +278,7 @@ class SparingTest extends TestCase
             'message' => 'Bad Request',
             'errors' => 'Sparing sudah ditutup',
         ]);
+        $this->assertDatabaseCount('notifications', 0);
     }
 
     public function testRejectSparingRequestSuccess()
@@ -294,6 +303,7 @@ class SparingTest extends TestCase
             'id' => $sparingRequest->id,
             'status' => 'rejected',
         ]);
+        $this->assertDatabaseCount('notifications', 1);
     }
 
     public function testRejectSparingRequestUnauthorized()
@@ -317,6 +327,7 @@ class SparingTest extends TestCase
             'message' => 'Bad Request',
             'errors' => 'Anda tidak bisa menolak sparing milik orang lain',
         ]);
+        $this->assertDatabaseCount('notifications', 0);
     }
 
     public function testRejectSparingRequestAlreadyDone()
@@ -342,6 +353,7 @@ class SparingTest extends TestCase
             'message' => 'Bad Request',
             'errors' => 'Sparing sudah ditutup',
         ]);
+        $this->assertDatabaseCount('notifications', 0);
     }
 
 }

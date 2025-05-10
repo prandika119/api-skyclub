@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\AcceptedCancelScheduleEvent;
+use App\Events\RejectedCancelScheduleEvent;
+use App\Events\RequestCancelScheduleEvent;
 use App\Http\Resources\CancelRequestResource;
 use App\Models\ListBooking;
 use App\Models\RequestCancel;
@@ -57,6 +60,7 @@ class RequestCancelController extends Controller
             'user_id' => $user->id,
             'reason' => $data['reason'],
         ]);
+        event(new RequestCancelScheduleEvent($listBooking));
         return response([
             'message' => 'Request Cancel Booking Success',
         ], 201);
@@ -74,6 +78,7 @@ class RequestCancelController extends Controller
         $requestCancel->listBooking->update([
             "status_request" => "Canceled"
         ]);
+        event(new AcceptedCancelScheduleEvent($requestCancel->listBooking));
         return response([
             'message' => 'Request Cancel Booking Accepted',
             'data' => new CancelRequestResource($requestCancel)
@@ -92,6 +97,7 @@ class RequestCancelController extends Controller
         $requestCancel->listBooking->update([
             'status_request' => 'Cancel Rejected'
         ]);
+        event(new RejectedCancelScheduleEvent($requestCancel->listBooking));
         return response([
             'message' => 'Request Cancel Booking Rejected',
             'data' => new CancelRequestResource($requestCancel)

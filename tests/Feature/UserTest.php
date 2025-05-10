@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Notifications\SuccessBookingNotification;
 use Database\Seeders\UserSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -34,5 +35,33 @@ class UserTest extends TestCase
         dump($user->profile_photo);
         $this->assertEquals('John Doe', $user->name);
         $this->assertNotNull($user->profile_photo);
+    }
+
+    public function testGetNotifications()
+    {
+        $user = $this->AuthUser();
+        $listbooking = $this->paymentBooking($user, now());
+        $user->notify(new SuccessBookingNotification($listbooking->booking));
+        $response = $this->get('/api/users/current/notifications');
+        dump($response->getContent());
+        $response->assertStatus(200);
+    }
+
+    public function testReadNotification()
+    {
+        $user = $this->AuthUser();
+        $listbooking = $this->paymentBooking($user, now());
+        $user->notify(new SuccessBookingNotification($listbooking->booking));
+
+        $notification = $user->unreadNotifications->first();
+
+        $response = $this->post("/api/notifications/{$notification->id}/read");
+
+        $response->assertStatus(200);
+        $response->assertJson([
+            'message' => 'Notification marked as read',
+        ]);
+
+        $this->assertNotNull($notification->fresh()->read_at);
     }
 }
