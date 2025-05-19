@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\CompanyProfileController;
 use App\Http\Controllers\FacilityController;
 use App\Http\Controllers\FieldController;
 use App\Http\Controllers\FieldImageController;
@@ -15,6 +16,7 @@ use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\SparingController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VoucherController;
+use App\Http\Controllers\WalletController;
 use App\Models\RequestCancel;
 use App\Models\RequestReschedule;
 use Illuminate\Support\Facades\Route;
@@ -79,6 +81,14 @@ Route::middleware('auth:sanctum')->group(function (){
 
         // Admin Booking User Offline
         Route::post('/booking/user-offline', [BookingController::class, 'selectUser']);
+
+        // Setting Company Profiles
+        Route::get('/settings', [CompanyProfileController::class, 'getSetting']);
+        Route::put('/settings', [CompanyProfileController::class, 'updateSetting']);
+        Route::post('/settings/logo', [CompanyProfileController::class, 'updateLogo']);
+        Route::post('/settings/banner', [CompanyProfileController::class, 'updateBanner']);
+        Route::post('/settings/slider', [CompanyProfileController::class, 'updateSlider']);
+
     });
 
     // Route Authenticated User
@@ -101,12 +111,6 @@ Route::middleware('auth:sanctum')->group(function (){
     // Route Voucher
     Route::post('/voucher/{code}', [VoucherController::class, 'checkVoucher']);
 
-    // Route History Booking
-    //Route::get('/list-booking/{listBooking:id}', [ListBookingController::class, 'show']);
-    //Route::get('/list-booking', [ListBookingController::class, 'index']);
-    //Route::post('/list-booking/{listBooking:id}/request-reschedule', [ListBookingController::class, 'addRequest']);
-    //Route::post('/list-booking/{listBooking:id}/request-cancel', [ListBookingController::class, 'addRequest']);
-
     // Route Sparing
     Route::post('/sparings', [SparingController::class, 'store']);
     Route::post('/sparings/{sparing:id}/request', [SparingController::class, 'addSparingRequest']);
@@ -124,6 +128,13 @@ Route::middleware('auth:sanctum')->group(function (){
     // Route Notifications
     Route::get('/notifications', [UserController::class, 'getNotifications']);
     Route::post('/notifications/{notification:id}/read', [UserController::class, 'readNotification']);
+
+    // Route Payments
+    Route::get('/wallet', [WalletController::class, 'getRecentTransaction']);
+    Route::post('/wallet/topup', [WalletController::class, 'topup']);
+    Route::post('/wallet/transfer', [WalletController::class, 'transfer']);
+    Route::post('/wallet/withdraw', [WalletController::class, 'withdraw']);
+
 });
 
 // Route only guest

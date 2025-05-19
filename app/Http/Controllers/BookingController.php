@@ -150,6 +150,15 @@ class BookingController extends Controller
                 ]);
             }
             if ($user->role != 'admin'){
+                // Create Recent Transaction
+                $user->recentTransactions()->create([
+                    'user_id' => $user->id,
+                    'wallet_id' => $user->wallet->id,
+                    'transaction_type' => 'booking',
+                    'amount' => $cart['total_price'],
+                    'bank_ewallet' => null,
+                    'number' => null,
+                ]);
                 $user->wallet()->update([
                     'balance' => $wallet - $cart['total_price']
                 ]);

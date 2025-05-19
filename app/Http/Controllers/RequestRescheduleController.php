@@ -9,9 +9,6 @@ use App\Http\Resources\RescheduleRequestResource;
 use App\Models\ListBooking;
 use App\Models\RequestReschedule;
 use App\Http\Requests\StoreRequestRescheduleRequest;
-use App\Http\Requests\UpdateRequestRescheduleRequest;
-use App\Models\User;
-use App\Notifications\RequestRescheduleNotification;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
@@ -135,6 +132,21 @@ class RequestRescheduleController extends Controller
                     'message' => 'Bad Request',
                     'errors' => 'Related ListBooking records not found'
                 ], 400);
+            }
+
+            if ($newListBooking->price < $oldListBooking->price){
+                $user = $requestReschedule->user;
+                $user->recentTransactions()->create([
+                    'user_id' => $user->id,
+                    'wallet_id' => $user->wallet->id,
+                    'transaction_type' => 'booking',
+                    'amount' => $oldListBooking->price - $newListBooking->price,
+                    'bank_ewallet' => null,
+                    'number' => null,
+                ]);
+                $user->wallet()->update([
+                    'balance' => $user->wallet->balance + ($oldListBooking->price - $newListBooking->price)
+                ]);
             }
 
             $newListBooking->update([

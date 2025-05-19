@@ -72,12 +72,21 @@ class RequestCancelController extends Controller
     public function acceptRequest(UpdateRequestCancelRequest $request, RequestCancel $requestCancel)
     {
         $data = $request->validated();
+        $user = $requestCancel->listBooking->user;
         $requestCancel->update([
             'reply' => $data['reply'],
         ]);
         $requestCancel->listBooking->update([
             "status_request" => "Canceled"
         ]);
+        $user->recentTransactions()->create([
+            'user_id' => $user->id,
+            'wallet_id' => $user->wallet->id,
+            'transaction_type' => 'booking',
+            'amount' => $requestCancel->listBooking->price,
+        ]);
+        $requestCancel->listBooking->user->wallet->increment('balance', $requestCancel->listBooking->total_price);
+
         event(new AcceptedCancelScheduleEvent($requestCancel->listBooking));
         return response([
             'message' => 'Request Cancel Booking Accepted',

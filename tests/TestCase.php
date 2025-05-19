@@ -7,6 +7,7 @@ use App\Models\Facility;
 use App\Models\Field;
 use App\Models\FieldImage;
 use App\Models\ListBooking;
+use App\Models\RecentTransaction;
 use App\Models\RequestCancel;
 use App\Models\RequestReschedule;
 use App\Models\Schedule;
@@ -30,6 +31,7 @@ abstract class TestCase extends BaseTestCase
     protected function setUp(): void
     {
         parent::setUp();
+        DB::delete('delete from recent_transactions');
         DB::delete('delete from notifications');
         DB::delete('delete from request_cancels');
         DB::delete('delete from request_reschedules');
@@ -49,8 +51,10 @@ abstract class TestCase extends BaseTestCase
 
         $directoryProfilePhoto = storage_path('app/public/profile_photos');
         $directoryFieldImage = storage_path('app/public/fields');
+        $directoryGeneralImage = storage_path('app/public/company_profile');
         File::cleanDirectory($directoryProfilePhoto);
         File::cleanDirectory($directoryFieldImage);
+        File::cleanDirectory($directoryGeneralImage);
         Session::forget('cart');
     }
 
@@ -73,6 +77,9 @@ abstract class TestCase extends BaseTestCase
             'email' => 'test2@gmail.com',
             'no_telp' => '082234567891',
             'password' => bcrypt('password')
+        ]);
+        $user->wallet()->create([
+            'balance' => 0,
         ]);
         $this->actingAs($user);
         return $user;
@@ -227,5 +234,22 @@ abstract class TestCase extends BaseTestCase
             'new_list_booking_id' => $listBooking2->id,
         ]);
         return $requestReschedule;
+    }
+
+    protected function topupWallet(User $user, $amount): RecentTransaction
+    {
+        $user->wallet()->update([
+            'balance' => $amount,
+        ]);
+
+        $recent = RecentTransaction::create([
+            'user_id' => $user->id,
+            'wallet_id' => $user->wallet->id,
+            'transaction_type' => 'topup',
+            'amount' => $amount,
+            'bank_ewallet' => 'Bank BCA',
+            'number' => '1234567890',
+        ]);
+        return $recent;
     }
 }

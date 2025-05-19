@@ -61,4 +61,8 @@ class User extends Authenticatable
     {
         return $this->hasMany(Sparing::class, 'created_by');
     }
+    public function recentTransactions()
+    {
+        return $this->hasMany(RecentTransaction::class);
+    }
 }
