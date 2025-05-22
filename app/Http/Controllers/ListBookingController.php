@@ -10,6 +10,13 @@ use Illuminate\Http\Request;
 
 class ListBookingController extends Controller
 {
+    /**
+     * Get My Booking
+     *
+     * Get History My Booking
+     * @param MyBookingQuery $request
+     * @return \Illuminate\Http\Response
+     */
     public function index(MyBookingQuery $request)
     {
         $data = $request->validated();
@@ -59,10 +66,5 @@ class ListBookingController extends Controller
         ]);
     }
 
-
-    public function show($id)
-    {
-        //
-    }
 
 }

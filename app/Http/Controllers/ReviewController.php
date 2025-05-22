@@ -9,6 +9,12 @@ use Illuminate\Http\Request;
 
 class ReviewController extends Controller
 {
+    /**
+     * Get All of Reviews
+     *
+     * Get All of Reviews
+     * @return \Illuminate\Http\Response
+     */
     public function index()
     {
         $reviews = Review::with(['user'])->get();
@@ -17,6 +23,14 @@ class ReviewController extends Controller
             'data' => ReviewResource::collection($reviews)
         ], 200);
     }
+
+    /**
+     * Get Review by id
+     *
+     * Get Review by id
+     * @param Review $review
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function store(StoreReviewRequest $request)
     {
         $data = $request->validated();

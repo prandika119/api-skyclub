@@ -13,7 +13,15 @@ use Illuminate\Support\Facades\Request;
 class AuthController extends Controller
 {
     /**
+     * Register User
+     *
      * Register a new user.
+     *
+     * @unauthenticated
+     *
+     * @param RegisterRequest $request
+     *
+     * @return Response
      */
     public function register (RegisterRequest $request): Response{
         $data = $request->validated();
@@ -26,7 +34,12 @@ class AuthController extends Controller
     }
 
     /**
+     * Login User
+     *
      * Login a user.
+     *
+     * @unauthenticated
+     *
      */
     public function login(LoginRequest $request): JsonResponse
     {
@@ -55,7 +68,9 @@ class AuthController extends Controller
     }
 
     /**
-     * Logout a user.
+     * Logout User
+     *
+     * Logout current user.
      */
     public function logout(Request $request): JsonResponse
     {

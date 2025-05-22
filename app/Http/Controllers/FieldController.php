@@ -14,6 +14,8 @@ use Illuminate\Http\Response;
 class FieldController extends Controller
 {
     /**
+     * Create new field
+     *
      * Store a field
      */
     public function store(StoreFieldRequest $request): Response
@@ -26,6 +28,8 @@ class FieldController extends Controller
     }
 
     /**
+     * Get Field by id
+     *
      * Display a field
      */
     public function show(Field $field): Response
@@ -38,6 +42,8 @@ class FieldController extends Controller
     }
 
     /**
+     * Update Field
+     *
      * Update a field
      */
     public function update(UpdateFieldRequest $request, Field $field): Response
@@ -50,6 +56,8 @@ class FieldController extends Controller
     }
 
     /**
+     * Get Schedules
+     *
      * Display a field's schedules
      * @param Field $field
      * @return Response

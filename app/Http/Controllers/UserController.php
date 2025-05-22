@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Storage;
 class UserController extends Controller
 {
     /**
-     * Get data of the authenticated user
+     * Get user data
      *
      * @return JsonResponse
      */
@@ -40,6 +40,8 @@ class UserController extends Controller
     }
 
     /**
+     * Update user's data
+     *
      * Update the authenticated user's data
      *
      * @param UpdateUserRequest $request
@@ -63,6 +65,11 @@ class UserController extends Controller
         ], 200);
     }
 
+    /**
+     * Get all notifications
+     *
+     * @return JsonResponse
+     */
     public function getAllNotifications()
     {
         $user = auth()->user();
@@ -73,6 +80,12 @@ class UserController extends Controller
         ]);
     }
 
+    /**
+     * Mark a notification as read
+     *
+     * @param string $id
+     * @return JsonResponse
+     */
     public function readNotification(string $id)
     {
         $user = auth()->user();

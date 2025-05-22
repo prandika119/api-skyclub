@@ -10,6 +10,8 @@ use App\Http\Requests\UpdateCompanyProfileRequest;
 class CompanyProfileController extends Controller
 {
     /**
+     * Get the Company Profile Data
+     *
      * Display a listing of the resource.
      */
     public function getSetting()
@@ -22,6 +24,8 @@ class CompanyProfileController extends Controller
     }
 
     /**
+     * Update the Company Profile Data
+     *
      * Update the specified resource in storage.
      */
     public function updateSetting(UpdateCompanyProfileRequest $request)
@@ -35,6 +39,11 @@ class CompanyProfileController extends Controller
         ]);
     }
 
+    /**
+     * Update the Company Profile Logo
+     *
+     * Update the specified resource in storage.
+     */
     public function updateLogo()
     {
         $companyProfile = CompanyProfile::first();
@@ -53,6 +62,11 @@ class CompanyProfileController extends Controller
         ]);
     }
 
+    /**
+     * Update the Company Profile Banner
+     *
+     * Update the specified resource in storage.
+     */
     public function updateBanner()
     {
         $companyProfile = CompanyProfile::first();
@@ -71,6 +85,11 @@ class CompanyProfileController extends Controller
         ]);
     }
 
+    /**
+     * Update the Company Profile Slider Photos
+     *
+     * Update the specified resource in storage.
+     */
     public function updateSlider()
     {
         $companyProfile = CompanyProfile::first();

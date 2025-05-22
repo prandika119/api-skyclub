@@ -17,14 +17,8 @@ use Illuminate\Support\Facades\Session;
 class BookingController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
+     * Store Booking (Not Yet Payment)
+     *
      * Store a Booking & Navigate Payment Page
      */
     public function store(StoreBookingRequest $request)
@@ -51,6 +45,11 @@ class BookingController extends Controller
         ]);
     }
 
+    /**
+     * Booking For Offline User
+     *
+     * Store a Booking For Offline User & Navigate Payment Page
+     */
     public function storeOffline()
     {
         $user = auth()->user();
@@ -64,6 +63,11 @@ class BookingController extends Controller
         ]);
     }
 
+    /**
+     * Select User for Booking
+     *
+     * Select User Offline for Booking
+     */
     public function selectUser(Request $request)
     {
         $data = $request->validate([
@@ -88,6 +92,8 @@ class BookingController extends Controller
 
 
     /**
+     * Payment
+     *
      * Payment for Booking
      */
     public function payment(PaymentRequest $request)

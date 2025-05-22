@@ -15,7 +15,7 @@ use Carbon\Carbon;
 class RequestCancelController extends Controller
 {
     /**
-     * Display a listing of Request Cancel Booking.
+     * Get All of Request Cancel Booking.
      */
     public function index()
     {

@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Session;
 class CartController extends Controller
 {
     /**
+     * Get All Cart
+     *
      * Display a list cart
      */
     public function index()
@@ -22,6 +24,8 @@ class CartController extends Controller
     }
 
     /**
+     * Add schedule to cart
+     *
      * Store a schedule cart
      */
     public function store(StoreCartRequest $request)
@@ -55,7 +59,9 @@ class CartController extends Controller
 
 
     /**
-     * Remove schedule to cart
+     * Delete schedule from cart
+     *
+     * Remove schedule from cart
      */
     public function destroy(string $id)
     {

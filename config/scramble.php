@@ -24,12 +24,21 @@ return [
         /*
          * API version.
          */
-        'version' => env('API_VERSION', '0.0.1'),
+        'version' => env('API_VERSION', '1.0.0'),
 
         /*
          * Description rendered on the home page of the API documentation (`/docs/api`).
          */
-        'description' => '',
+        'description' => '
+        ## API Documentation
+        This is the API documentation for the SkyClub application. The API allows you to interact with the SkyClub system and perform various operations.
+        ## Authentication
+        The API uses token-based authentication. You need to include the token in the `Authorization` header of your requests.
+        ## Error Handling
+        The API returns standard HTTP status codes to indicate the success or failure of a request. The response body contains additional information about the error, if applicable.
+        ## Contact
+        ig: @andika_dwi_pra
+        email: andika.dwiprasetya119@gmail.com',
     ],
 
     /*

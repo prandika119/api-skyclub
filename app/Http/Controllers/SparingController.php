@@ -16,7 +16,9 @@ use Illuminate\Support\Facades\DB;
 class SparingController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Get All of Sparing
+     *
+     * Get All of Sparing in Sparing Page
      */
     public function index()
     {
@@ -34,7 +36,9 @@ class SparingController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Create Sparing
+     *
+     * Store a sparing
      */
     public function store(StoreSparingRequest $request)
     {

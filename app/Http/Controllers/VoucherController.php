@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Session;
 class VoucherController extends Controller
 {
     /**
+     * Check voucher
+     *
      * Check voucher validity and apply discount
      *
      * @param Request $request
@@ -88,6 +90,8 @@ class VoucherController extends Controller
     }
 
     /**
+     * Get All of Vouchers
+     *
      * Display a listing of the resource.
      */
     public function index()
@@ -100,6 +104,8 @@ class VoucherController extends Controller
     }
 
     /**
+     * Create a new voucher
+     *
      * Store a newly created resource in storage.
      */
     public function store(StoreVoucherRequest $request)
@@ -126,6 +132,8 @@ class VoucherController extends Controller
     }
 
     /**
+     * Get Voucher by id
+     *
      * Display the specified resource.
      */
     public function show(Voucher $voucher)
@@ -138,6 +146,8 @@ class VoucherController extends Controller
 
 
     /**
+     * Update Voucher
+     *
      * Update the specified resource in storage.
      */
     public function update(UpdateVoucherRequest $request, Voucher $voucher)
@@ -164,6 +174,8 @@ class VoucherController extends Controller
     }
 
     /**
+     * Delete Voucher
+     *
      * Remove the specified resource from storage.
      */
     public function destroy(Voucher $voucher)

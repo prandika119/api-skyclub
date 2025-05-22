@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\DB;
 class FacilityController extends Controller
 {
     /**
+     * Add Facility
+     *
      * Add a facility to a field
      */
     public function addFacilityToField(Field $field, Facility $facility): Response
@@ -27,6 +29,8 @@ class FacilityController extends Controller
     }
 
     /**
+     * Delete Facility
+     *
      * Remove a facility from a field
      */
     public function removeFacilityFromField(Field $field, Facility $facility): Response

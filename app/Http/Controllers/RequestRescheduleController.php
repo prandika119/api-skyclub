@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\DB;
 class RequestRescheduleController extends Controller
 {
     /**
-     * Display a listing of Reschedule Request
+     * Get All of Reschedule Request
      */
     public function index()
     {

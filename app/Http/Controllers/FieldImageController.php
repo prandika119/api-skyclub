@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Storage;
 class FieldImageController extends Controller
 {
     /**
+     * Store field image
+     *
      * Store a field image
      * @param Field $field
      * @param StoreFieldImageRequest $request
@@ -35,6 +37,8 @@ class FieldImageController extends Controller
     }
 
     /**
+     * Delete field image
+     *
      * Remove a field image
      * @param FieldImage $fieldImage
      * @return Response

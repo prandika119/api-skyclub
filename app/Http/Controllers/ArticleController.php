@@ -11,7 +11,11 @@ use App\Http\Requests\UpdateArticleRequest;
 class ArticleController extends Controller
 {
     /**
+     * Get All Article
+     *
      * Display a listing of the resource.
+     *
+     * @unauthenticated
      */
     public function index()
     {
@@ -30,6 +34,8 @@ class ArticleController extends Controller
     }
 
     /**
+     * Create new Article
+     *
      * Store a newly created resource in storage.
      */
     public function store(StoreArticleRequest $request)
@@ -50,7 +56,10 @@ class ArticleController extends Controller
     }
 
     /**
+     * Show Specific Article
+     *
      * Display the specified resource.
+     * @unauthenticated
      */
     public function show(Article $article)
     {
@@ -72,6 +81,8 @@ class ArticleController extends Controller
     }
 
     /**
+     * Update Article
+     *
      * Update the specified resource in storage.
      */
     public function update(UpdateArticleRequest $request, Article $article)
@@ -96,6 +107,8 @@ class ArticleController extends Controller
     }
 
     /**
+     * Delete Article
+     *
      * Remove the specified resource from storage.
      */
     public function destroy(Article $article)
@@ -116,6 +129,8 @@ class ArticleController extends Controller
     }
 
     /**
+     * Add Article Photo
+     *
      * Add a photo to the article.
      */
     public function addArticlePhoto(PhotoArticleRequest $request)

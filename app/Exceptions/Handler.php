@@ -3,6 +3,7 @@
 namespace App\Exceptions;
 
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
@@ -52,6 +53,7 @@ class Handler extends ExceptionHandler
         });
     }
 
+
     public function render($request, Throwable $e): Response
     {
         if ($e instanceof AuthenticationException) {
@@ -72,6 +74,20 @@ class Handler extends ExceptionHandler
                 'message' => "Validation error",
                 'errors' => $e->errors()
             ], 422);
+        }
+
+        if ($e instanceof NotFoundHttpException) {
+            return response([
+                'message' => "Not Found",
+                'errors' => "Resource atau endpoint yang diminta tidak ditemukan"
+            ], 404);
+        }
+
+        if ($e instanceof ModelNotFoundException) {
+            return response([
+                'message' => "Model Not Found",
+                'errors' => "Data yang diminta tidak ditemukan"
+            ], 404);
         }
 
         // Handle server errors
