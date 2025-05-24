@@ -30,4 +30,9 @@ class Booking extends Model
     {
         return $this->belongsTo(User::class, 'rented_by', 'id');
     }
+
+    public function voucher()
+    {
+        return $this->belongsTo(Voucher::class);
+    }
 }

@@ -23,6 +23,10 @@ class FieldResource extends JsonResource
             'weekend_price' => $this->weekend_price,
             'photos' => FieldImageResource::collection($this->photos),
             'facilities' => FacilityResource::collection($this->facilities),
+            'review' => [
+                'average' => $this->reviews->avg('rating'),
+                'count' => $this->reviews()->count()
+            ]
         ];
     }
 }

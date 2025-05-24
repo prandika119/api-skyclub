@@ -57,6 +57,7 @@ Route::middleware('auth:sanctum')->group(function (){
         Route::delete('/fields/{field}/facilities/{facility}', [FacilityController::class, 'removeFacilityFromField']);
 
         // Route Voucher Admin
+        Route::get('/vouchers', [VoucherController::class, 'index']);
         Route::post('/vouchers', [VoucherController::class, 'store']);
         Route::get('/vouchers/{voucher:id}', [VoucherController::class, 'show']);
         Route::put('/vouchers/{vouchers:id}', [VoucherController::class, 'update']);
@@ -100,8 +101,8 @@ Route::middleware('auth:sanctum')->group(function (){
     Route::post('/users/logout', [AuthController::class, 'logout'])->name('logout');
 
     // Route Cart
-    Route::get('/cart', [CartController::class, 'index']);
-    Route::post('/cart', [CartController::class, 'store']);
+    Route::get('/cart/{booking:id}', [CartController::class, 'index']);
+    Route::post('/cart/{booking:id}', [CartController::class, 'saveAllCart']);
     Route::delete('/cart/{id}', [CartController::class, 'destroy']);
 
     // Route Booking
@@ -110,7 +111,7 @@ Route::middleware('auth:sanctum')->group(function (){
     Route::post('/booking/payment', [BookingController::class, 'payment']);
 
     // Route Voucher
-    Route::post('/voucher/{code}', [VoucherController::class, 'checkVoucher']);
+    Route::post('/voucher/{code}/booking/{booking}', [VoucherController::class, 'checkVoucher']);
 
     // Route Sparing
     Route::post('/sparings', [SparingController::class, 'store']);

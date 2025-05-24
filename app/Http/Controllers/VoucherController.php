@@ -5,9 +5,12 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreVoucherRequest;
 use App\Http\Requests\UpdateVoucherRequest;
 use App\Http\Resources\VoucherResource;
+use App\Models\Booking;
+use App\Models\ListBooking;
 use App\Models\Voucher;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 
 class VoucherController extends Controller
@@ -22,13 +25,20 @@ class VoucherController extends Controller
      */
     public function checkVoucher(Request $request)
     {
-        $cart = Session::get('cart', []);
+//        $cart = Session::get('cart', []);
         $code = $request->route('code');
+        $booking = Booking::where('id', $request->route('booking'))->first();
         $voucher = Voucher::where('code', $code)->first();
+        Log::info('voucher', [$voucher]);
+        Log::info('booking', [$booking]);
         $discountAmount = 0;
-        $totalPrice = $cart['total_price'] ?? 0;
+        $totalPrice = $booking->listBooking->sum('price');
 
         if (!$voucher) {
+            $booking->update([
+                'voucher_id' => null,
+            ]);
+
             return response([
                 'message' => 'Voucher tidak ditemukan',
                 'data' => null
@@ -72,19 +82,25 @@ class VoucherController extends Controller
         // Pastikan diskon tidak melebihi total harga
         $discountAmount = min($discountAmount, $totalPrice);
 
-        // Update kuota voucher
-        $cart['voucher'] = new VoucherResource($voucher);
-        $cart['discount'] = $discountAmount;
-        $cart['total_price'] = $totalPrice - $discountAmount;
+        // add voucher to booking
+        $booking->update([
+            'voucher_id' => $voucher->id,
+        ]);
 
-        // Simpan kembali ke session
-        Session::put('cart', $cart);
+        // update voucher quota
+//        $voucher->update([
+//            'quota' => $voucher->quota - 1,
+//        ]);
+
+        // update total price
+        $totalPrice -= $discountAmount;
+
         return response([
             'message' => 'Voucher valid',
             'data' => [
                 'voucher' => new VoucherResource($voucher),
                 'discount' => $discountAmount,
-                'total_price' => $cart['total_price'],
+                'total_price' => $totalPrice
             ]
         ], 200);
     }

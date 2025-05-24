@@ -18,6 +18,10 @@ class DatabaseSeeder extends Seeder
             ArticleSeeder::class,
             FieldSeeder::class,
             FacilitySeeder::class,
+            VoucherSeeder::class
         ]);
+        // add facility to field
+
+
     }
 }

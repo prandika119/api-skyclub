@@ -22,4 +22,9 @@ class Field extends Model
     {
         return $this->belongsToMany(Facility::class, 'fields_facilities', 'field_id', 'facility_id');
     }
+
+    public function reviews(): HasMany
+    {
+        return $this->hasMany(Review::class, 'field_id');
+    }
 }

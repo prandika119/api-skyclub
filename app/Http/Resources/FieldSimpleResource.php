@@ -20,6 +20,10 @@ class FieldSimpleResource extends JsonResource
             'name' => $this->name,
             'description' => $this->description,
             'photos' => FieldImageResource::collection($this->photos),
+            'review' => [
+                'average' => $this->reviews->avg('rating'),
+                'count' => $this->reviews()->count()
+            ]
         ];
     }
 }

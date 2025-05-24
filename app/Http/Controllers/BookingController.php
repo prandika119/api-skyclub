@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Events\SuccessBookingEvent;
 use App\Http\Requests\PaymentRequest;
+use App\Http\Requests\SchedulesCartRequest;
 use App\Http\Requests\StoreBookingRequest;
+use App\Http\Resources\CartResource;
 use App\Models\Booking;
 use App\Models\ListBooking;
 use App\Models\User;
@@ -12,6 +14,7 @@ use App\Models\Voucher;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 
 class BookingController extends Controller
@@ -21,26 +24,62 @@ class BookingController extends Controller
      *
      * Store a Booking & Navigate Payment Page
      */
-    public function store(StoreBookingRequest $request)
+    public function store(SchedulesCartRequest $request)
     {
-        $data = $request->validated();
-        $user = auth()->user();
-        if ($user->role != 'admin'){
-            $booking = Booking::create(
-                [
-                    'order_date' => now(),
-                    'rented_by' => $user->id,
-                    'expired_at' => now()->addMinutes(5),
-                ]
-            );
+        $schedules = $request->validated();
+
+        Log::info('schedules', $schedules);
+        if (!isset($schedules['schedules'])) {
+            throw new \Exception('Key schedules tidak ditemukan di data yang divalidasi');
         }
-        $cart = Session::get('cart', []);
+
+//        Log::info('schedules', [$schedules['schedules'][0]['field_id']]);
+        $user = auth()->user();
+        DB::beginTransaction();
+        try {
+            if ($user->role != 'admin'){
+                $booking = Booking::create(
+                    [
+                        'order_date' => now(),
+                        'rented_by' => $user->id,
+                        'expired_at' => now()->addMinutes(5),
+                    ]
+                );
+            } else {
+                return response([
+                    'message' => 'Bad Request',
+                    'errors' => 'Admin tidak bisa booking di sini'
+                ], 400);
+            }
+
+            foreach ($schedules['schedules'] as $schedule){
+                ListBooking::create([
+                    'field_id' => $schedule['field_id'],
+                    'booking_id' => $booking->id,
+                    'date' => $schedule['schedule_date'],
+                    'session' => $schedule['schedule_time'],
+                    'price' => $schedule['price'],
+                ]);
+            }
+
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response([
+                'message' => 'Internal Server Error',
+                'errors' => $e->getMessage()
+            ], 500);
+        }
+
+
+        $list_booking = ListBooking::where('booking_id', $booking->id)->get();
+        Log::info('list_booking', [$list_booking]);
 
         return response([
             'message' => 'Booking Created',
             'data' => [
                 'booking' => $booking,
-                'cart' => $cart
+                'cart' => CartResource::collection($list_booking),
             ]
         ]);
     }
@@ -99,15 +138,32 @@ class BookingController extends Controller
     public function payment(PaymentRequest $request)
     {
         $data = $request->validated();
-        $cart = Session::get('cart', []);
+        Log::info('payload', [$data]);
+//        $cart = Session::get('cart', []);
         $user = auth()->user();
         $wallet = $user->wallet->balance;
         $booking = Booking::where('id', $data['booking_id'])->firstOrFail();
-        $schedules_cart = collect($cart['schedules']);
-        $schedule_dates = $schedules_cart->pluck('schedule_date')->unique()->values()->toArray();
-        $schedules_booked = ListBooking::whereIn('date', $schedule_dates)->get();
-        $voucher = isset($cart['voucher']['id'])? Voucher::find($cart['voucher']['id']) : null;
-        //$voucher = Voucher::where('id', $cart['voucher']['id'])->first() ?? null;
+        Log::info('booking', [$booking]);
+
+//        $schedules_cart = collect($cart['schedules']);
+        $schedules_cart = $booking->listBooking;
+        Log::info('schedules_cart', [$schedules_cart]);
+
+        $schedule_dates = $schedules_cart->pluck('session')->unique()->values()->toArray();
+        Log::info('schedules_dates', [$schedule_dates]);
+//        $schedule_dates = $schedules_cart->pluck('schedule_date')->unique()->values()->toArray();
+
+        $schedules_booked = ListBooking::whereIn('date', $schedule_dates)->whereHas('booking',function ($query){
+            $query->where('status', '!=', 'pending');
+        })->get();
+        Log::info('schedules_booked', [$schedules_booked]);
+
+//        $voucher = isset($cart['voucher']['id'])? Voucher::find($cart['voucher']['id']) : null;
+        $voucher = $booking->voucher;
+        Log::info('voucher', [$voucher]);
+
+        $totalPrice = $data['total_price'];
+
         $conflict = false;
 
         // Check Time to Payment
@@ -119,7 +175,7 @@ class BookingController extends Controller
         }
 
         // Check Wallet Balance
-        if ($wallet < $cart['total_price'] && $user->role != 'admin'){
+        if ($wallet < $totalPrice && $user->role != 'admin'){
             return response([
                 'message' => 'Bad Request',
                 'errors' => 'Saldo tidak mencukupi'
@@ -146,27 +202,27 @@ class BookingController extends Controller
         // All Schedules save, continue to DB Transaction
         DB::beginTransaction();
         try {
-            foreach ($schedules_cart as $schedule) {
-                ListBooking::create([
-                    'date' => Carbon::parse($schedule['schedule_date']),
-                    'session' => $schedule['schedule_time'],
-                    'price' => $schedule['price'],
-                    'field_id' => $schedule['field_id'],
-                    'booking_id' => $data['booking_id']
-                ]);
-            }
+//            foreach ($schedules_cart as $schedule) {
+//                ListBooking::create([
+//                    'date' => Carbon::parse($schedule['schedule_date']),
+//                    'session' => $schedule['schedule_time'],
+//                    'price' => $schedule['price'],
+//                    'field_id' => $schedule['field_id'],
+//                    'booking_id' => $data['booking_id']
+//                ]);
+//            }
             if ($user->role != 'admin'){
                 // Create Recent Transaction
                 $user->recentTransactions()->create([
                     'user_id' => $user->id,
                     'wallet_id' => $user->wallet->id,
                     'transaction_type' => 'booking',
-                    'amount' => $cart['total_price'],
+                    'amount' => $totalPrice,
                     'bank_ewallet' => null,
                     'number' => null,
                 ]);
                 $user->wallet()->update([
-                    'balance' => $wallet - $cart['total_price']
+                    'balance' => $wallet - $totalPrice
                 ]);
             }
 

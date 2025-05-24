@@ -54,37 +54,37 @@ class Handler extends ExceptionHandler
     }
 
 
-    public function render($request, Throwable $e): Response
+    public function render($request, Throwable $e): JsonResponse
     {
         if ($e instanceof AuthenticationException) {
-            return response([
+            return response()->json([
                 'message' => "Unauthenticated",
                 'errors' => "Silahkan login terlebih dahulu"
             ], 401);
         }
         if ($e instanceof AuthorizationException) {
-            return response([
+            return response()->json([
                 'message' => "Unauthorized",
                 'errors' => "Anda tidak memiliki izin untuk mengakses resource ini"
             ], 403);
         }
 
         if ($e instanceof ValidationException) {
-            return response([
+            return response()->json([
                 'message' => "Validation error",
                 'errors' => $e->errors()
             ], 422);
         }
 
         if ($e instanceof NotFoundHttpException) {
-            return response([
+            return response()->json([
                 'message' => "Not Found",
                 'errors' => "Resource atau endpoint yang diminta tidak ditemukan"
             ], 404);
         }
 
         if ($e instanceof ModelNotFoundException) {
-            return response([
+            return response()->json([
                 'message' => "Model Not Found",
                 'errors' => "Data yang diminta tidak ditemukan"
             ], 404);
@@ -92,11 +92,60 @@ class Handler extends ExceptionHandler
 
         // Handle server errors
         if ($e instanceof \Exception) {
-            return response([
+            return response()->json([
                 'message' => "Server Error",
+                'debuging_bro' => $e->getMessage(),
                 'errors' => "Terjadi kesalahan pada server. Silahkan coba lagi nanti."
             ], 500);
         }
+
         return parent::render($request, $e);
     }
+//
+//    public function render($request, Throwable $e): Response
+//    {
+//        if ($e instanceof AuthenticationException) {
+//            return response([
+//                'message' => "Unauthenticated",
+//                'errors' => "Silahkan login terlebih dahulu"
+//            ], 401);
+//        }
+//        if ($e instanceof AuthorizationException) {
+//            return response([
+//                'message' => "Unauthorized",
+//                'errors' => "Anda tidak memiliki izin untuk mengakses resource ini"
+//            ], 403);
+//        }
+//
+//        if ($e instanceof ValidationException) {
+//            return response([
+//                'message' => "Validation error",
+//                'errors' => $e->errors()
+//            ], 422);
+//        }
+//
+//        if ($e instanceof NotFoundHttpException) {
+//            return response([
+//                'message' => "Not Found",
+//                'errors' => "Resource atau endpoint yang diminta tidak ditemukan"
+//            ], 404);
+//        }
+//
+//        if ($e instanceof ModelNotFoundException) {
+//            return response([
+//                'message' => "Model Not Found",
+//                'errors' => "Data yang diminta tidak ditemukan"
+//            ], 404);
+//        }
+//
+//        // Handle server errors
+//        if ($e instanceof \Exception) {
+//            return response([
+//                'message' => "Server Error",
+//                'debuging_bro' => $e->getMessage(),
+//                'errors' => "Terjadi kesalahan pada server. Silahkan coba lagi nanti."
+//            ], 500);
+//        }
+//        return parent::render($request, $e);
+//    }
 }

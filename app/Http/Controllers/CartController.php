@@ -2,8 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\SchedulesCartRequest;
 use App\Http\Requests\StoreCartRequest;
+use App\Http\Resources\CartResource;
+use App\Http\Resources\ListBookingResource;
+use App\Models\Booking;
+use App\Models\ListBooking;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 
 
@@ -14,13 +20,62 @@ class CartController extends Controller
      *
      * Display a list cart
      */
-    public function index()
+    public function index(Booking $booking)
     {
-        $cart = Session::get('cart', []);
+        $list_booking = ListBooking::where('booking_id', $booking->id)->whereHas('booking', function ($query){
+            $query->where('status', 'pending');
+        })->get();
+        $total_price = $list_booking->sum('price');
+        $discountAmount = 0;
+        $voucher= $booking->voucher;
+        Log::info('voucher', [$voucher]);
+        if ($voucher){
+            if ($voucher->discount_percentage > 0) {
+                // Hitung diskon percentage
+                $discountAmount = $total_price * ($voucher->discount_percentage / 100);
+
+                // Batasi maksimal diskon jika ada max_discount
+                if ($voucher->max_discount > 0) {
+                    $discountAmount = min($discountAmount, $voucher->max_discount);
+                }
+            } elseif ($voucher->discount_price > 0) {
+                // Diskon dalam nominal fix
+                $discountAmount = $voucher->discount_price;
+            }
+
+            // Pastikan diskon tidak melebihi total harga
+            $discountAmount = min($discountAmount, $total_price);
+        }
+        $total_price -= $discountAmount;
+
         return response([
             'message' => 'Success',
-            'data' => $cart
+            'data' => [
+                'cart' =>  CartResource::collection($list_booking),
+                'sub_total' => $list_booking->sum('price'),
+                'total_price' => $total_price,
+                'code_voucher' => $voucher ? $voucher->code : null,
+                'discount' =>$discountAmount ?? 0,
+            ]
         ], 200);
+    }
+
+
+    public function saveAllCart(SchedulesCartRequest $request, Booking $booking)
+    {
+        $schedules = $request->validated();
+        foreach ($schedules as $schedule){
+            ListBooking::create([
+                'field_id' => $schedule['field_id'],
+                'booking_id' => $booking->id,
+                'date' => $schedule['schedule_date'],
+                'session' => $schedule['schedule_time'],
+                'price' => $schedule['price'],
+            ]);
+        }
+        return response([
+            'message' => 'All schedules saved successfully',
+        ], 201);
     }
 
     /**

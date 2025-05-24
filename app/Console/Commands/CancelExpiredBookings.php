@@ -33,6 +33,9 @@ class CancelExpiredBookings extends Command
 
         foreach ($expiredBookings as $booking) {
             $booking->update(['status' => 'canceled']);
+
+            // delete list booking
+            $booking->listBooking()->delete();
         }
         $this->info('Expired bookings canceled: ' . $expiredBookings->count());
     }
