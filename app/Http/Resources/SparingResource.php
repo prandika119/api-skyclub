@@ -18,7 +18,6 @@ class SparingResource extends JsonResource
             [
                 'id' => $this->id,
                 'list_booking' => new ListBookingResource($this->listBooking),
-                'created_by' => new UserResource($this->createdBy),
                 'description' => $this->description,
                 'status' => $this->status,
             ];

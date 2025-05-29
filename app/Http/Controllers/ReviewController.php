@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreReviewRequest;
 use App\Http\Resources\ReviewResource;
+use App\Models\ListBooking;
 use App\Models\Review;
 use Illuminate\Http\Request;
 
@@ -25,9 +26,9 @@ class ReviewController extends Controller
     }
 
     /**
-     * Get Review by id
+     * Add Review
      *
-     * Get Review by id
+     * Add Review
      * @param Review $review
      * @return \Illuminate\Http\JsonResponse
      */
@@ -36,8 +37,10 @@ class ReviewController extends Controller
         $data = $request->validated();
         if ($data)
         $user = auth()->user();
+
         Review::create([
             'rating' => $data['rating'],
+            'field_id' => $data['field_id'],
             'comment' => $data['comment'],
             'user_id' => $user->id,
             'booking_id' => $data['booking_id'],

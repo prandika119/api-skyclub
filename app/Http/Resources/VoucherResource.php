@@ -19,6 +19,7 @@ class VoucherResource extends JsonResource
             'id' => $this->id,
             'expired_date' => $this->expire_date,
             'code' => $this->code,
+            'quota' => $this->quota,
             'discount_price' => $this->discount_price,
             'discount_precentage' => $this->discount_precentage,
             'max_discount' => $this->max_discount,

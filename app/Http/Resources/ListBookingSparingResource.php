@@ -20,9 +20,10 @@ class ListBookingSparingResource extends JsonResource
             'session' => $this->session,
             'price' => $this->price,
             'status' => $this->sparing->status,
+            'order_date' => $this->booking->order_date,
             'field' => new FieldSimpleResource($this->field),
             'user' => new UserResource($this->sparing->createdBy),
-            'sparing_request' => $this->sparing->sparingRequest,
+            'sparing_request' => SparingRequestResource::collection($this->sparing->sparingRequest),
         ];
     }
 }

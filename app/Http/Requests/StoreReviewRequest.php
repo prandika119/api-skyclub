@@ -25,6 +25,7 @@ class StoreReviewRequest extends FormRequest
             'rating' => 'required|integer|between:1,5',
             'comment' => 'nullable|string|max:255',
             'booking_id' => 'required|exists:bookings,id',
+            'field_id' => 'required|exists:fields,id',
         ];
     }
 }

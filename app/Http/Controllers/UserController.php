@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
 
@@ -31,6 +32,7 @@ class UserController extends Controller
                 "no_telp" => $user->no_telp,
                 "team" => $user->team,
                 "address" => $user->address,
+                "role" => $user->role,
                 "date_of_birth" => $user->date_of_birth,
                 "profile_photo" => $user->profile_photo,
                 "wallet" => $user->wallet->balance,
@@ -49,15 +51,19 @@ class UserController extends Controller
      */
     public function update(UpdateUserRequest $request): Response
     {
+        Log::info('Files:', $request->allFiles());
+        Log::info('Has File:', [$request->hasFile('profile_photo') ? 'Ya' : 'Tidak']);
+        Log::info('All request:', $request->all());
         $data = $request->validated();
+        Log::info($data);
         $user = auth()->user();
         if ($user->profile_photo){
             Storage::disk('public')->delete('profile_photos/'.$user->profile_photo);
         }
         if (isset($data['profile_photo'])){
-            $path = $data['profile_photo']->store('profile_photos', 'public');
+            $path = $request->file('profile_photo')->store('profile_photos', 'public');
             $data['profile_photo'] = $path;
-            dump($data['profile_photo']);
+            Log::info('Uploaded file path: ' . $path);
         }
         $user->update($data);
         return response([

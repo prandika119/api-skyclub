@@ -13,6 +13,7 @@ class Review extends Model
         'comment',
         'user_id',
         'booking_id',
+        'field_id'
     ];
 
     public function user()

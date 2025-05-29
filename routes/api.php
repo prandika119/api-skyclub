@@ -95,7 +95,8 @@ Route::middleware('auth:sanctum')->group(function (){
 
     // Route Authenticated User
     Route::get('/users/current', [UserController::class, 'get']);
-    Route::patch('/users/current', [UserController::class, 'update']);
+//    Route::patch('/users/current', [UserController::class, 'update']);
+    Route::post('/users/current', [UserController::class, 'update']);
     Route::get('/users/current/notifications', [UserController::class, 'getAllNotifications']);
     Route::post('/users/current/notifications/{id}/read', [UserController::class, 'readNotification']);
     Route::post('/users/logout', [AuthController::class, 'logout'])->name('logout');

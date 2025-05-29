@@ -20,6 +20,16 @@ use Illuminate\Support\Facades\Session;
 class BookingController extends Controller
 {
     /**
+     * Get All Booking In Admin
+     *
+     *
+     */
+    public function index()
+    {
+        //
+    }
+
+    /**
      * Store Booking (Not Yet Payment)
      *
      * Store a Booking & Navigate Payment Page

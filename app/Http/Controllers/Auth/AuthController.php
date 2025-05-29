@@ -62,6 +62,7 @@ class AuthController extends Controller
                     'profile_photo' => $user->profile_photo,
                     'wallet' => $user->wallet->balance,
                     'role' => $user->role,
+                    'no_telp' => $user->no_telp,
                     'notif' => $user->unreadNotifications()->count()
                 ],
                 'token' => $token
