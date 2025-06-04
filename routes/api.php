@@ -33,6 +33,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 // Route All can access
+Route::get('/fields', [FieldController::class, 'index']); // get data list field
 Route::get('fields/{field:id}', [FieldController::class, 'show']); // get data field by id
 Route::get('fields/{field:id}/schedules/', [FieldController::class, 'getSchedules']); // get data field schedule by id
 Route::get('/sparings', [SparingController::class, 'index']); // get data list sparing in sparing page

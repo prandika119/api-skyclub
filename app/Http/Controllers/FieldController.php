@@ -13,6 +13,22 @@ use Illuminate\Http\Response;
 
 class FieldController extends Controller
 {
+
+
+    /**
+     * Get all fields
+     *
+     * Display a listing of the resource.
+     */
+    public function index(): Response{
+        $fields = Field::all();
+        return response([
+            'message' => 'Success',
+            'data' => $fields
+        ]);
+    }
+
+
     /**
      * Create new field
      *
