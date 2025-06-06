@@ -38,6 +38,13 @@ class ReviewController extends Controller
         if ($data)
         $user = auth()->user();
 
+        // chek if review already review
+        if (Review::where('booking_id', $data['booking_id'])->exists()) {
+            return response()->json([
+                'message' => 'You have already reviewed this booking'
+            ], 400);
+        }
+
         Review::create([
             'rating' => $data['rating'],
             'field_id' => $data['field_id'],

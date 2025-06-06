@@ -27,7 +27,7 @@ class RegisterRequest extends FormRequest
             'name' => 'required|string',
             'email' => 'required|email|unique:users',
             'username' => 'required|string|unique:users',
-            'no_telp' => 'required|string|unique:users',
+            'no_telp' => 'required|regex:/^\+?[0-9]{10,15}$/|unique:users',
             'password' => 'required|confirmed|string|min:6',
         ];
     }
