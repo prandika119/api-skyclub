@@ -107,7 +107,7 @@ abstract class TestCase extends BaseTestCase
     protected function CreateDataField(): Field
     {
         $this->seed([FieldSeeder::class]);
-        return Field::where('name', 'fieldTest')->first();
+        return Field::where('name', 'Lapangan Mini Soccer SkyClub 1')->first();
     }
 
     protected function CreateCompleteDataField(): Field

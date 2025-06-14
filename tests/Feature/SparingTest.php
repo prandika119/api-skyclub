@@ -57,6 +57,7 @@ class SparingTest extends TestCase
         $user = $this->AuthUser();
         $date1 = Carbon::now()->addDays(7);
         $date2 = Carbon::now()->addDays(3);
+        //$date2 = Carbon::now()->subDays(3);
         $this->createSparing($user, $date1);
         $this->createSparing($user, $date2);
         $response = $this->get('/api/sparings');
@@ -77,6 +78,27 @@ class SparingTest extends TestCase
         ]);
     }
 
+    public function testGetAllSparingButAnyPastSchedule(): void
+    {
+        $user = $this->AuthUser();
+        $date1 = Carbon::now()->addDays(7);
+        //$date2 = Carbon::now()->addDays(3);
+        $date2 = Carbon::now()->subDays(3);
+        $this->createSparing($user, $date1);
+        $this->createSparing($user, $date2);
+        $response = $this->get('/api/sparings');
+        dump($response->getContent());
+        $response->assertStatus(200);
+        $response->assertJson([
+            'message' => 'Sukses',
+            'data' => [
+                [
+                    'description' => 'Sparing Test',
+                    'status' => 'waiting'
+                ]
+            ]
+        ]);
+    }
     public function testGetSparingNotAvailable(): void
     {
         $response = $this->get('/api/sparings');

@@ -24,7 +24,7 @@ class UpdateUserRequest extends FormRequest
         return [
             'name' => ['sometimes', 'string', 'max:255'],
             'email' => ['sometimes', 'string', 'email', 'max:255'],
-            'no_telp' => ['sometimes', 'string', 'max:13'],
+            'no_telp' => ['sometimes', 'regex:/^\+?[0-9]{10,15}$/', 'max:13'],
             'team' => ['sometimes', 'string', 'max:255'],
             'address' => ['sometimes', 'string', 'max:255'],
             'date_of_birth' => ['sometimes', 'date'],

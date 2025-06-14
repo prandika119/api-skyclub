@@ -22,7 +22,9 @@ class SparingController extends Controller
      */
     public function index()
     {
-        $sparings = Sparing::with('createdBy')->latest()->where('status', '!=', 'done')->get();
+        $sparings = Sparing::with('createdBy')->latest()->where('status', '!=', 'done')->whereHas('listBooking', function ($query){
+            $query->where('date', '>=', now()->format('Y-m-d'));
+        })->get();
         if ($sparings->isEmpty()) {
             return response()->json([
                 'message' => 'Tidak ada sparing yang tersedia',

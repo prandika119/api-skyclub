@@ -20,7 +20,7 @@ class ArticleSeeder extends Seeder
             'content' => json_encode([
                 'text' => 'This is the content of article 1.',
                 'images' => [
-                    'http://localhost:8000/storage/articles/image1.jpg',
+                    'articles/image1.jpg',
                 ],
             ]),
             'author_id' => $admin->id,
