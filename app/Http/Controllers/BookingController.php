@@ -7,6 +7,7 @@ use App\Http\Requests\PaymentRequest;
 use App\Http\Requests\SchedulesCartRequest;
 use App\Http\Requests\StoreBookingRequest;
 use App\Http\Resources\CartResource;
+use App\Http\Resources\ListBookingResource;
 use App\Models\Booking;
 use App\Models\ListBooking;
 use App\Models\User;
@@ -26,7 +27,14 @@ class BookingController extends Controller
      */
     public function index()
     {
-        //
+        $bookings = ListBooking::whereHas('booking', function ($query){
+            $query->where('status', '!=', 'pending');
+        })->latest()->get();
+        Log::info('bookings', [$bookings]);
+        return response([
+            'message' => 'Success',
+            'data' => ListBookingResource::collection($bookings)
+        ]);
     }
 
     /**

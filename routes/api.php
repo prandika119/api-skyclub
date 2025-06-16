@@ -74,6 +74,9 @@ Route::middleware('auth:sanctum')->group(function (){
         Route::delete('/articles/{article:id}', [ArticleController::class, 'destroy']);
         // Route::post('articles/{article}')
 
+        // All Booking
+        Route::get('/bookings', [BookingController::class, 'index']);
+
         // Cancel & Reschedule Request
         Route::get('/booking/request-reschedule', [RequestRescheduleController::class, 'index']);
         Route::get('/booking/request-cancel', [RequestCancelController::class, 'index']);

@@ -169,4 +169,14 @@ class BookingTest extends TestCase
         $user->refresh();
         $this->assertEquals(910000, $user->wallet->balance);
     }
+
+    public function testGetAllBooking()
+    {
+        $user = $this->AuthUser2();
+        $this->AuthAdmin();
+        $this->paymentBooking($user, '2025-06-16');
+        $response = $this->get('/api/bookings');
+        dump($response->getContent());
+        $response->assertStatus(200);
+    }
 }

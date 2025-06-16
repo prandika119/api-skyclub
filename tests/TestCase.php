@@ -174,7 +174,8 @@ abstract class TestCase extends BaseTestCase
         $booking = Booking::create([
             'order_date' => now()->subDay(1),
             'rented_by' => $user->id,
-            'expired_at' => now()->addMinutes(5)
+            'expired_at' => now()->addMinutes(5),
+            'status' => 'accepted',
         ]);
         $list_booking = ListBooking::create([
             'date' => Carbon::parse($date),
