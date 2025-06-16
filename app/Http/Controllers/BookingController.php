@@ -6,6 +6,7 @@ use App\Events\SuccessBookingEvent;
 use App\Http\Requests\PaymentRequest;
 use App\Http\Requests\SchedulesCartRequest;
 use App\Http\Requests\StoreBookingRequest;
+use App\Http\Resources\BookingResource;
 use App\Http\Resources\CartResource;
 use App\Http\Resources\ListBookingResource;
 use App\Models\Booking;
@@ -27,13 +28,10 @@ class BookingController extends Controller
      */
     public function index()
     {
-        $bookings = ListBooking::whereHas('booking', function ($query){
-            $query->where('status', '!=', 'pending');
-        })->latest()->get();
-        Log::info('bookings', [$bookings]);
+        $bookings = Booking::where('status', '!=', 'pending')->latest()->get();
         return response([
             'message' => 'Success',
-            'data' => ListBookingResource::collection($bookings)
+            'data' => BookingResource::collection($bookings)
         ]);
     }
 
