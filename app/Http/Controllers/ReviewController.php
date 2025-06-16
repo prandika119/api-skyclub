@@ -35,7 +35,7 @@ class ReviewController extends Controller
     public function store(StoreReviewRequest $request)
     {
         $data = $request->validated();
-        if ($data)
+
         $user = auth()->user();
 
         // chek if review already review

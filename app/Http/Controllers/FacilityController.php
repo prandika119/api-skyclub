@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\FacilityResource;
 use App\Models\Facility;
 use App\Http\Requests\StoreFacilityRequest;
 use App\Http\Requests\UpdateFacilityRequest;
@@ -11,6 +12,20 @@ use Illuminate\Support\Facades\DB;
 
 class FacilityController extends Controller
 {
+    /**
+     * Get all facilities
+     *
+     * Display a listing of the resource.
+     */
+    public function index(): Response
+    {
+        $facilities = Facility::all();
+        return response([
+            'message' => 'Success',
+            'data' => FacilityResource::collection($facilities)
+        ]);
+    }
+
     /**
      * Add Facility
      *
