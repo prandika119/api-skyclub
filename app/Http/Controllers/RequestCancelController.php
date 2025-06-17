@@ -84,7 +84,7 @@ class RequestCancelController extends Controller
         $user->recentTransactions()->create([
             'user_id' => $user->id,
             'wallet_id' => $user->wallet->id,
-            'transaction_type' => 'booking',
+            'transaction_type' => 'refund',
             'amount' => $requestCancel->listBooking->price,
         ]);
         $requestCancel->user->wallet->increment('balance', $requestCancel->listBooking->price);
