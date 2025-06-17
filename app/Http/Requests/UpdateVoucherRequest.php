@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateVoucherRequest extends FormRequest
 {
@@ -23,7 +24,11 @@ class UpdateVoucherRequest extends FormRequest
     {
         return [
             'expire_date' => 'required|date',
-            'code' => 'required|string|max:255|unique:vouchers,code,' . $this->route('voucher'), // Validasi kode unik
+            'code' => [
+                'required',
+                'string',
+                Rule::unique('vouchers')->ignore($this->route('voucher')),
+            ], // Validasi kode unik
             'quota' => 'required|integer',
             'discount_price' => 'nullable|integer', // Tipe data integer
             'discount_percentage' => 'nullable|integer', // Tipe data integer
