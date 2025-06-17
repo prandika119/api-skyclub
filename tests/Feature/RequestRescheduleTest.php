@@ -69,10 +69,21 @@ class RequestRescheduleTest extends TestCase
         $this->assertDatabaseCount('notifications', 0);
     }
 
-    public function testGetListReschedule()
+    public function testGetListRescheduleBelumLewat()
     {
         $user = $this->AuthAdmin();
         $listBooking1 = $this->paymentBooking($user, now()->addDays(4)->format('Y-m-d'));
+        $listBooking2 = $this->paymentBooking($user, now()->addDays(5)->format('Y-m-d'));
+        $this->requestReschedule($listBooking1, $listBooking2, $user);
+        $response = $this->get('/api/booking/request-reschedule');
+        dump($response->getContent());
+        $response->assertStatus(200);
+    }
+
+    public function testGetListRescheduleSudahLewat()
+    {
+        $user = $this->AuthAdmin();
+        $listBooking1 = $this->paymentBooking($user, now()->subDays(4)->format('Y-m-d'));
         $listBooking2 = $this->paymentBooking($user, now()->addDays(5)->format('Y-m-d'));
         $this->requestReschedule($listBooking1, $listBooking2, $user);
         $response = $this->get('/api/booking/request-reschedule');

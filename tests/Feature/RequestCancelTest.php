@@ -69,7 +69,17 @@ class RequestCancelTest extends TestCase
         $response = $this->get('/api/booking/request-cancel');
         dump($response->getContent());
         $response->assertStatus(200);
+    }
 
+    public function testGetRequestCancelSudahLewat(): void
+    {
+        $user = $this->AuthAdmin();
+        $date = Carbon::now()->subDays(9);
+        $listBooking = $this->paymentBooking($user, $date);
+        $this->requestCancel($listBooking, $user);
+        $response = $this->get('/api/booking/request-cancel');
+        dump($response->getContent());
+        $response->assertStatus(200);
     }
 
     public function testAcceptRequestCancel(): void

@@ -19,8 +19,13 @@ class RequestRescheduleController extends Controller
      */
     public function index()
     {
-        $rescheduleRequest = RequestReschedule::latest()->get();
-        if ($rescheduleRequest->isEmpty()) {
+        // Gunakan query yang sudah diperbaiki
+        $rescheduleRequests = RequestReschedule::orWhereHas('oldListBooking', function ($query) {
+            $query->where('date', '>=', now())
+                ->where('status_request', 'Reschedule Request');
+        })->latest()->get();
+
+        if ($rescheduleRequests->isEmpty()) {
             return response([
                 'message' => 'Tidak Ada Request Reschedule',
                 'data' => []
@@ -28,7 +33,7 @@ class RequestRescheduleController extends Controller
         }
         return response([
             'message' => 'List Request Reschedule',
-            'data' => RescheduleRequestResource::collection($rescheduleRequest)
+            'data' => RescheduleRequestResource::collection($rescheduleRequests)
         ]);
     }
 

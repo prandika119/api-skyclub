@@ -19,7 +19,9 @@ class RequestCancelController extends Controller
      */
     public function index()
     {
-        $cancelRequest = RequestCancel::where('reply', null)->latest()->get();
+        $cancelRequest = RequestCancel::where('reply', null)->whereHas('listBooking', function ($query){
+            $query->where('date', '>=', now());
+        })->latest()->get();
         if ($cancelRequest->isEmpty()) {
             return response([
                 'message' => 'Tidak Ada Request Cancel Booking',
