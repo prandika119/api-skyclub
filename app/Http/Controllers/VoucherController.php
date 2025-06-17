@@ -182,7 +182,7 @@ class VoucherController extends Controller
             ], 400);
         }
 
-        $voucher->update([$data]);
+        $voucher->update($data);
         return response([
             'message' => 'Voucher updated successfully',
             'data' => null

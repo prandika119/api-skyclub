@@ -62,7 +62,7 @@ Route::middleware('auth:sanctum')->group(function (){
         Route::get('/vouchers', [VoucherController::class, 'index']);
         Route::post('/vouchers', [VoucherController::class, 'store']);
         Route::get('/vouchers/{voucher:id}', [VoucherController::class, 'show']);
-        Route::put('/vouchers/{vouchers:id}', [VoucherController::class, 'update']);
+        Route::put('/vouchers/{voucher:id}', [VoucherController::class, 'update']);
         Route::delete('/vouchers/{voucher:id}', [VoucherController::class, 'destroy']);
 
 
