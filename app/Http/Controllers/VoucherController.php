@@ -169,7 +169,7 @@ class VoucherController extends Controller
     public function update(UpdateVoucherRequest $request, Voucher $voucher)
     {
         $data = $request->validated();
-        if (isset($data['discount_price']) && isset($data['discount_percentage'])) {
+        if ($data['discount_price'] != 0 && $data['discount_percentage'] != 0) {
             return response([
                 'message' => 'Hanya satu diskon yang boleh diisi',
                 'data' => null
