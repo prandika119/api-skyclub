@@ -28,7 +28,7 @@ class BookingController extends Controller
      */
     public function index()
     {
-        $bookings = Booking::where('status', '!=', 'pending')->latest()->get();
+        $bookings = Booking::where('status', '!=', 'pending')->has('listBooking')->latest()->get();
         return response([
             'message' => 'Success',
             'data' => BookingResource::collection($bookings)

@@ -19,7 +19,9 @@ class BookingResource extends JsonResource
             'order_date' => $this->order_date,
             'status' => $this->status,
             'user' => new UserResource($this->rentedBy),
-            'list_bookings' => $this->listBooking
+            'list_bookings' => $this->listBooking,
+            'total_price' => $this->getTotalPrice(),
+            'price_after_discount' => $this->getPriceAfterDiscount(),
         ];
     }
 }

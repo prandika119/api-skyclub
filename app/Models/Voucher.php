@@ -20,6 +20,20 @@ class Voucher extends Model
         'min_price'
     ];
 
+    public function getDiscount(int $price = 0)
+    {
+        if ($this->discount_percentage > 0) {
+            $discountAmount = ($price * $this->discount_percentage) / 100;
+            if ($this->max_discount > 0 && $discountAmount > $this->max_discount) {
+                return $this->max_discount;
+            }
+            return $discountAmount;
+        } elseif ($this->discount_price > 0) {
+            return $this->discount_price;
+        }
+        return 0;
+    }
+
     public function isExpired()
     {
         $currentDate = Carbon::now();

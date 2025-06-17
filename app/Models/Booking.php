@@ -18,6 +18,21 @@ class Booking extends Model
         'voucher_id'
     ];
 
+    public function getTotalPrice()
+    {
+        return $this->listBooking()->sum('price');
+    }
+
+    public function getPriceAfterDiscount(){
+        if ($this->voucher) {
+            $totalPrice = $this->getTotalPrice();
+            $discount = $this->voucher->getDiscount($totalPrice);
+            return max(0, $totalPrice - $discount);
+        } else {
+            return $this->getTotalPrice();
+        }
+    }
+
     public function listBooking()
     {
         return $this->hasMany(ListBooking::class);
