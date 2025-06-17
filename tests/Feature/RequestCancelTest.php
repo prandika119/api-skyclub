@@ -91,7 +91,7 @@ class RequestCancelTest extends TestCase
         $response = $this->post('/api/booking/' . $requestCancel->id . '/accept-cancel', [
             "reply" => "Diterima",
         ]);
-        dump($response->getContent());
+        dump($response);
         $response->assertStatus(200);
         $this->assertDatabaseHas('list_bookings', [
             'id' => $listBooking->id,
