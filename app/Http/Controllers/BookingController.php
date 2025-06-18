@@ -118,6 +118,41 @@ class BookingController extends Controller
     }
 
     /**
+     * Search User
+     *
+     * Search User for Booking
+     */
+    public function searchUser(Request $request)
+    {
+        $query = $request->input('query'); // Parameter pencarian dari request
+
+        if (empty($query)) {
+            return response()->json([
+                'message' => 'Please provide a search query (name, phone number, or email).',
+                'data' => []
+            ], 400); // Bad Request
+        }
+
+        $users = User::where(function($q) use ($query) {
+            $q->where('name', 'like', '%' . $query . '%')
+                ->orWhere('no_telp', 'like', '%' . $query . '%')
+                ->orWhere('email', 'like', '%' . $query . '%');
+        })->get();
+
+        if ($users->isEmpty()) {
+            return response()->json([
+                'message' => 'No users found matching your query.',
+                'data' => []
+            ], 404); // Not Found
+        }
+
+        return response()->json([
+            'message' => 'Users found successfully.',
+            'data' => $users
+        ], 200); // OK
+    }
+
+    /**
      * Select User for Booking
      *
      * Select User Offline for Booking

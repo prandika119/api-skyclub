@@ -86,6 +86,7 @@ Route::middleware('auth:sanctum')->group(function (){
         Route::post('/booking/{requestCancel:id}/reject-cancel', [RequestCancelController::class, 'rejectRequest']);
 
         // Admin Booking User Offline
+        Route::get('/users/search', [BookingController::class, 'searchUser']);
         Route::post('/booking/{booking:id}/create-user', [BookingController::class, 'createUser']);
         Route::post('/booking/{booking:id}/select-user', [BookingController::class, 'selectUser']);
 
