@@ -86,8 +86,8 @@ Route::middleware('auth:sanctum')->group(function (){
         Route::post('/booking/{requestCancel:id}/reject-cancel', [RequestCancelController::class, 'rejectRequest']);
 
         // Admin Booking User Offline
-        Route::post('/booking/user-offline', [BookingController::class, 'storeOffline']);
-        Route::post('/booking/user-offline/select-user', [BookingController::class, 'selectUser']);
+        Route::post('/booking/{booking:id}/create-user', [BookingController::class, 'createUser']);
+        Route::post('/booking/{booking:id}/select-user', [BookingController::class, 'selectUser']);
 
         // Setting Company Profiles
         Route::get('/settings', [CompanyProfileController::class, 'getSetting']);

@@ -179,4 +179,9 @@ class BookingTest extends TestCase
         dump($response->getContent());
         $response->assertStatus(200);
     }
+
+    public function selectUser()
+    {
+
+    }
 }

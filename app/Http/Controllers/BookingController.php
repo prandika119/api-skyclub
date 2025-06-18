@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Events\SuccessBookingEvent;
 use App\Http\Requests\PaymentRequest;
+use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\SchedulesCartRequest;
 use App\Http\Requests\StoreBookingRequest;
 use App\Http\Resources\BookingResource;
@@ -53,20 +54,13 @@ class BookingController extends Controller
         $user = auth()->user();
         DB::beginTransaction();
         try {
-            if ($user->role != 'admin'){
-                $booking = Booking::create(
-                    [
-                        'order_date' => now(),
-                        'rented_by' => $user->id,
-                        'expired_at' => now()->addMinutes(5),
-                    ]
-                );
-            } else {
-                return response([
-                    'message' => 'Bad Request',
-                    'errors' => 'Admin tidak bisa booking di sini'
-                ], 400);
-            }
+            $booking = Booking::create(
+                [
+                    'order_date' => now(),
+                    'rented_by' => $user->id,
+                    'expired_at' => now()->addMinutes(5),
+                ]
+            );
 
             foreach ($schedules['schedules'] as $schedule){
                 ListBooking::create([
@@ -101,21 +95,26 @@ class BookingController extends Controller
     }
 
     /**
-     * Booking For Offline User
+     * Create Offline User for Booking
      *
-     * Store a Booking For Offline User & Navigate Payment Page
+     * Create User and Select to Booking
      */
-    public function storeOffline()
+    public function createUser(RegisterRequest $request, Booking $booking)
     {
-        $user = auth()->user();
-        $cart = Session::get('cart', []);
-
-        return response([
-            'message' => 'Booking Created',
-            'data' => [
-                'cart' => $cart
-            ]
+        $data = $request->validated();
+        $data['password'] = bcrypt($data['password']);
+        $user = User::create($data);
+        $user->wallet()->create(['balance' => 0]);
+        $booking->update([
+            'rented_by' => $user->id
         ]);
+        return response([
+            'message' => 'User created and selected to booking',
+            'data' => [
+                'user' => $user,
+                'booking' => $booking
+            ]
+        ], 201);
     }
 
     /**
@@ -123,19 +122,16 @@ class BookingController extends Controller
      *
      * Select User Offline for Booking
      */
-    public function selectUser(Request $request)
+    public function selectUser(Booking $booking, Request $request)
     {
         $data = $request->validate([
             'user_id' => 'required|exists:users,id'
         ]);
         $user = User::where('id', $data['user_id'])->first();
-        $booking = Booking::create(
-            [
-                'order_date' => now(),
-                'rented_by' => $user->id,
-                'expired_at' => now()->addMinutes(5),
-            ]
-        );
+        $booking->update([
+                'rented_by' => $user->id
+        ]);
+
         return response([
             'message' => 'User Selected',
             'data' => [
