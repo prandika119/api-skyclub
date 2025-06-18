@@ -76,6 +76,8 @@ Route::middleware('auth:sanctum')->group(function (){
 
         // All Booking
         Route::get('/bookings', [BookingController::class, 'index']);
+        Route::get('/dashboard-stats', [BookingController::class, 'getBookingStats']);
+        Route::get('/booking-stats', [BookingController::class, 'getTimeSeriesStats']);
 
         // Cancel & Reschedule Request
         Route::get('/booking/request-reschedule', [RequestRescheduleController::class, 'index']);

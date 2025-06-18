@@ -19,6 +19,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Validator;
 
 class BookingController extends Controller
 {
@@ -35,6 +36,133 @@ class BookingController extends Controller
             'data' => BookingResource::collection($bookings)
         ]);
     }
+
+    /**
+     * Get Stats Booking
+     *
+     *
+     */
+    public function getBookingStats()
+    {
+        // Asumsi: Hanya booking dengan status 'Completed' yang dihitung sebagai pendapatan.
+        // Ganti 'Completed' dengan status yang sesuai di sistem Anda.
+        $statusSelesai = 'accepted';
+
+        // --- Perhitungan Statistik ---
+
+        // 1. Hari Ini
+        $todayQuery = Booking::whereDate('order_date', today());
+        $statsToday = [
+            'booking_count' => $todayQuery->count(),
+            'total_revenue' => (float) $this->calculateRevenue($todayQuery, $statusSelesai)
+        ];
+
+        // 2. Minggu Ini (dari Senin s/d Minggu)
+        $thisWeekQuery = Booking::whereBetween('order_date', [
+            now()->startOfWeek(Carbon::MONDAY),
+            now()->endOfWeek(Carbon::SUNDAY)
+        ]);
+        $statsThisWeek = [
+            'booking_count' => $thisWeekQuery->count(),
+            'total_revenue' => (float) $this->calculateRevenue($thisWeekQuery, $statusSelesai)
+        ];
+
+        // 3. Bulan Ini
+        $thisMonthQuery = Booking::whereMonth('order_date', now()->month)
+            ->whereYear('order_date', now()->year);
+        $statsThisMonth = [
+            'booking_count' => $thisMonthQuery->count(),
+            'total_revenue' => (float) $this->calculateRevenue($thisMonthQuery, $statusSelesai)
+        ];
+
+        // 4. Tahun Ini
+        $thisYearQuery = Booking::whereYear('order_date', now()->year);
+        $statsThisYear = [
+            'booking_count' => $thisYearQuery->count(),
+            'total_revenue' => (float) $this->calculateRevenue($thisYearQuery, $statusSelesai)
+        ];
+
+        // --- Gabungkan Semua Data ---
+        $data = [
+            'today' => $statsToday,
+            'this_week' => $statsThisWeek,
+            'this_month' => $statsThisMonth,
+            'this_year' => $statsThisYear,
+        ];
+
+        return response()->json([
+            'message' => 'Ringkasan statistik berhasil diambil',
+            'data' => $data,
+        ]);
+    }
+
+    /**
+     * Calculate Revenue
+     *
+     * Calculate total revenue from bookings
+     */
+    private function calculateRevenue($query, string $status): float
+    {
+        // Kita perlu clone query agar tidak mempengaruhi perhitungan count sebelumnya
+        return $query->clone()
+            ->join('list_bookings', 'bookings.id', '=', 'list_bookings.booking_id')
+            ->where('bookings.status', $status)
+            ->sum('list_bookings.price');
+    }
+
+    /**
+     * Get Time Series Statistics
+     */
+    public function getTimeSeriesStats(Request $request){
+        // 1. Validasi Input
+        $validator = Validator::make($request->all(), [
+            'days' => 'integer|min:1|max:365', // Validasi 'days' agar berupa angka antara 1-365
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
+
+        // Ambil parameter 'days' dengan nilai default 7
+        $days = $request->input('days', 7);
+
+        // 2. Tentukan Rentang Tanggal
+        $endDate = Carbon::today();
+        $startDate = Carbon::today()->subDays($days - 1);
+
+        // 3. Ambil Data Booking dari Database, dikelompokkan per hari
+        // Kita menggunakan Query Builder untuk performa dan fleksibilitas
+        $bookings = DB::table('bookings')
+            ->select(DB::raw('DATE(order_date) as date'), DB::raw('count(*) as count'))
+            ->whereBetween('order_date', [$startDate, $endDate])
+            // Tambahkan filter status jika perlu (misal: hanya hitung yang 'Completed')
+            // ->where('status', 'Completed')
+            ->groupBy('date')
+            ->orderBy('date', 'asc')
+            ->get()
+            // Ubah hasil query menjadi array asosiatif [ 'YYYY-MM-DD' => count ] agar mudah diakses
+            ->keyBy('date')
+            ->map(function ($item) {
+                return $item->count;
+            });
+
+        // 4. Siapkan rentang tanggal lengkap (termasuk hari dengan 0 booking)
+        $period = CarbonPeriod::create($startDate, $endDate);
+        $results = [];
+
+        foreach ($period as $date) {
+            $formattedDate = $date->format('Y-m-d');
+            $results[] = [
+                'date' => $formattedDate,
+                // Ambil jumlah booking dari hasil query, jika tidak ada, defaultnya 0
+                'count' => $bookings->get($formattedDate, 0),
+            ];
+        }
+
+        // 5. Kembalikan Respons
+        return response()->json($results);
+    }
+
 
     /**
      * Store Booking (Not Yet Payment)
