@@ -82,8 +82,8 @@ Route::middleware('auth:sanctum')->group(function (){
         // Cancel & Reschedule Request
         Route::get('/booking/request-reschedule', [RequestRescheduleController::class, 'index']);
         Route::get('/booking/request-cancel', [RequestCancelController::class, 'index']);
-        Route::post('/booking/{requestReschedule:id}/accept-reschedule', [RequestRescheduleController::class, 'acceptRequest']);
-        Route::post('/booking/{requestReschedule:id}/reject-reschedule', [RequestRescheduleController::class, 'rejectRequest']);
+        //Route::post('/booking/{requestReschedule:id}/accept-reschedule', [RequestRescheduleController::class, 'acceptRequest']);
+        //Route::post('/booking/{requestReschedule:id}/reject-reschedule', [RequestRescheduleController::class, 'rejectRequest']);
         Route::post('/booking/{requestCancel:id}/accept-cancel', [RequestCancelController::class, 'acceptRequest']);
         Route::post('/booking/{requestCancel:id}/reject-cancel', [RequestCancelController::class, 'rejectRequest']);
 

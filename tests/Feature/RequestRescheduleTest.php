@@ -23,9 +23,9 @@ class RequestRescheduleTest extends TestCase
         ]);
         dump($response->getContent());
         $response->assertStatus(200);
-        $this->assertDatabaseHas('request_reschedules', [
-            'old_list_booking_id' => $list_booking->id,
-            'user_id' => $user->id
+        $this->assertDatabaseHas('list_bookings', [
+            'id' => $list_booking->id,
+            'status_request' => "Canceled"
         ]);
         $this->assertDatabaseCount('notifications', 1);
     }

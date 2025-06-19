@@ -93,16 +93,11 @@ class RequestRescheduleController extends Controller
                 'price' => $data['new_schedule_price'],
                 'field_id' => $listBooking->field_id,
                 'booking_id' => $booking,
-                'status_request' => 'Reschedule Request'
-            ]);
-            RequestReschedule::create([
-                'old_list_booking_id' => $listBooking->id,
-                'user_id' => $user->id,
-                'new_list_booking_id' => $new_schedules->id,
+                'status_request' => 'Reschedule'
             ]);
 
             $listBooking->update([
-                'status_request' => 'Reschedule Request',
+                'status_request' => 'Canceled',
             ]);
 
             DB::commit();
