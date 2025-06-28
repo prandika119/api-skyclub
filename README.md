@@ -12,8 +12,10 @@ API SKY CLUB adalah API yang digunakan untuk mengelola data lapangan, booking, d
 7. Jalankan seeder untuk mengisi data awal dengan perintah `php artisan db:seed`.
 8. Jalankan server lokal dengan perintah `php artisan serve --port=<masukan port komputer yang tersedia (misal 8001)>`.
 9. Akses API melalui URL `http://localhost:<port>/api/` di browser atau menggunakan aplikasi seperti Postman.
-10. Atau gunakan dokumenentasi API yang bisa di akses dengan URL `http://api.skyclub.my.id/api/docs/api` untuk melihat semua endpoint yang tersedia.
+10. Atau gunakan dokumenentasi API yang bisa di akses dengan URL `http://localhost:<port>/docs/api` untuk melihat semua endpoint yang tersedia.
+11. Atau gunakan dokumenentasi API yang sudah kami sediakan (deploy) melewati URL `http://api.skyclub.my.id/docs/api` untuk melihat semua endpoint yang tersedia.
+
 
 ## Buka Dokumentasi API
 ### `Buka link http://api.skyclub.my.id/api/docs/api`
-- [Dokumentasi API](http://api.skyclub.my.id/api/docs/api)
+- [Dokumentasi API](http://api.skyclub.my.id/docs/api)
